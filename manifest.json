@@ -1,0 +1,20 @@
+{
+	"name": "NewBingGoGo",
+	"description": "newbing的简单聊天插件，可以通过设置魔法链接代理请求创建聊天api。",
+	"version": "1.0",
+	"manifest_version": 3,
+	"permissions": [
+		"storage",
+		"cookies"
+	],
+	"host_permissions": [
+		"http://*/*",
+		"https://*/*"
+	],
+	"icons": {
+		"128": "img/nasapod128x128.png"
+	},
+	"action": {
+		"default_popup": "popup/popup.html"
+	}
+}
