@@ -18,7 +18,7 @@
 ![](./ReadMeImg/4.png)
 ![](./ReadMeImg/5.png)
 ![](./ReadMeImg/6.png)
-我的魔法链接是下面这个，但是强烈不推荐大家用我的。建议自己创建最好的，或者用朋友的，创建的方法在最后面有写。（如果你们都用我的，小心把你们的Cookit全部存起来干好事awa）下面有创建 cloudflare 的 worker 的教程。
+我的魔法链接是下面这个，但是强烈不推荐大家用我的。建议自己创建最好的，或者用朋友的，创建的方法在最后面有写。（如果你们都用我的，小心把你们的Cookit全部存起来干好事awa）下面有cloudflareWorker创建魔法链接的教程。
 ~~~
 https://mybing.xn--xyza.top/
 ~~~
