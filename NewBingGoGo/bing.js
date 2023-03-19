@@ -149,6 +149,11 @@ var talk;
 var returnMessage;
 var isSpeaking = false;
 
+function isAskingToMagic(){
+	isSpeaking = true;
+	send_button.value = '正在请求魔法.';
+}
+
 function isSpeakingStart(){
 	isSpeaking = true;
 	send_button.value = '正在响应.';
@@ -171,28 +176,32 @@ send_button.onclick = () => {
 	}
 	addMyChat(text);
 	if (!talk) {
+		isAskingToMagic();
 		createChat().then((r) => {
 			if (!r.ok) {
+				isSpeakingFinish();
 				addError(r.message);
 				return;
 			}
 			talk = r.obj;
+			isSpeakingStart();
 			r = talk.sendMessage(text, onMessage);
 			if (!r.ok) {
+				isSpeakingFinish();
 				addError(r.message);
 				return;
 			}
-			isSpeakingStart();
 			returnMessage = r.obj;
 		});
 		return;
 	} else {
+		isSpeakingStart();
 		let r = talk.sendMessage(text, onMessage)
 		if (!r.ok) {
+			isSpeakingFinish();
 			addError(r.message);
 			return;
 		}
-		isSpeakingStart();
 		returnMessage = r.obj;
 	}
 };
@@ -216,4 +225,5 @@ restart_button.onclick = () => {
 	</div>
 </div>
 	`;
+	isSpeakingFinish();
 };
