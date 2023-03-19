@@ -9,7 +9,7 @@ var savecookiesButtun = document.querySelector('input#savecookies');
 var loadcookiesButtun = document.querySelector('input#loadcookies');
 var speak = document.querySelector('p#speak');
 
-var expUrl = new RegExp('^(https?://)([-a-zA-z]+\\.)+([-a-zA-z]+)+');
+var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+');
 var magicUrl;
 
 function loaded() {
