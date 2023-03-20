@@ -1,6 +1,9 @@
 var chat = document.getElementById('chat');
 var searchSuggestions = document.getElementById('SearchSuggestions');
 
+reSetStartChatMessage();
+reSetSearchSuggestions();
+
 //(json)
 function updateType2(json){
 	if(json.item.result.value=='Throttled'){
@@ -129,26 +132,44 @@ restart_button.onclick = () => {
 	if(!returnMessage){
 		return;
 	}
+    onMessageIsOKClose = true;
 	returnMessage.getCatWebSocket().close(1000, 'ok');
 	returnMessage = undefined;
 	talk = undefined;
+	reSetStartChatMessage();
+	isSpeakingFinish();
+	reSetSearchSuggestions();
+};
+
+function reSetStartChatMessage(){
 	chat.innerHTML = `
-<div id="chat">
-	<div class="bing">
-		<div class="adaptiveCardsFatherDIV">
-			<div class="textBlock markdown-body">
-				我已经准备好啦！快和我聊天吧！
-			</div>
-			<div class="throttling">
-				0 / 0
+	<div id="chat">
+		<div class="bing">
+			<div class="adaptiveCardsFatherDIV">
+				<div class="textBlock markdown-body">
+					${nextStartMessage()}
+				</div>
+				<div class="throttling">
+					0 / 0
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-	`;
-	isSpeakingFinish();
+		`;
+}
+
+function reSetSearchSuggestions(){
 	searchSuggestions.innerHTML = '';
-};
+	let prs = nextStartProposes();
+	prs.forEach((s)=>{
+		let a = document.createElement('a');
+		a.innerHTML = s;
+		a.onclick = (even)=>{
+			send(even.target.innerHTML);
+		}
+		searchSuggestions.appendChild(a);
+	});
+}
 
 
 

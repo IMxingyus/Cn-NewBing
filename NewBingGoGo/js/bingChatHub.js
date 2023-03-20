@@ -47,24 +47,25 @@ class SendMessageManager {
 	//获取用于发送的聊天数据
 	//(WebSocket,sreing)
 	sendChatMessage(chatWebSocket, chat) {
+		let pos = getStartProposes();
 		let previousMessages = [{
-			"text": "重新开始总是很棒。问我任何问题!",
+			"text": getStartMessage(),
 			"author": "bot",
 			"adaptiveCards": [],
 			"suggestedResponses": [{
-				"text": "如何制作蛋糕?",
+				"text": pos[0],
 				"contentOrigin": "DeepLeo",
 				"messageType": "Suggestion",
 				"messageId": getUuid(),
 				"offense": "Unknown"
 			}, {
-				"text": "给我说个笑话",
+				"text": pos[1],
 				"contentOrigin": "DeepLeo",
 				"messageType": "Suggestion",
 				"messageId": getUuid(),
 				"offense": "Unknown"
 			}, {
-				"text": "教我有关登月的信息",
+				"text": pos[2],
 				"contentOrigin": "DeepLeo",
 				"messageType": "Suggestion",
 				"messageId": getUuid(),
