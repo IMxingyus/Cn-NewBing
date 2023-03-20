@@ -178,7 +178,8 @@ class ReturnMessage {
 				if ((typeof this.onMessage[i]) == 'function') {
 					try{
 						this.onMessage[i]({
-							type: 'close'
+							type: 'close',
+							mess :mess
 						},this);
 					}catch(e){
 						console.warn(e)

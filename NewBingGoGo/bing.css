@@ -45,14 +45,44 @@
 /* 尾部分 */
 #tail {
 	position: fixed;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	height: 10em;
-	display: flex;
-	justify-content: center;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 10em;
+    display: flex;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    background-color: #ffffff78;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+#SearchSuggestions{
+	position: fixed;
+    top: -4em;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+	transition:opacity 0.2s
+}
+#SearchSuggestions > a{
 	backdrop-filter: blur(10px);
-	background-color: #ffffff78;
+    background-color: #d400ff1a;
+    border-radius: 2em;
+    padding: 0.5em;
+    font-size: 1.2em;
+    margin: 0.5em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+	transition: flex 0.5s;
+}
+#SearchSuggestions > a:hover{
+	cursor: pointer;
+	background-color: #d400ff51;
+	flex: none;
 }
 
 #tail-in {
@@ -110,19 +140,20 @@
 
 /* 页面部分 */
 #body-top {
-	height: 5em;
+	height: 20em;
 	width: 100%;
 }
 
 #body-bottom {
-	height: 10em;
+	height: 20em;
 	width: 100%;
 }
 
 /* 聊天部分,在页面内 */
 .bing {
-	text-align: left;
-	font-size: 1.3em;
+	display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .my {
@@ -130,64 +161,75 @@
 	font-size: 1.3em;
 }
 
-.bobo {
+.InternalSearchQuery ,.InternalLoaderMessage{
+	margin-left: 1em;
+	font-size: 1.3em;
+}
+.InternalSearchQuery>p ,.InternalLoaderMessage>p{
+	margin: 0;
+    margin-bottom: 1em;
+}
+
+.adaptiveCardsFatherDIV,.my > .bobo {
 	display: inline-block;
 	background-color: #ffffff;
 	border-radius: 1em;
 	padding: 1em 1em;
-	max-width: 70%;
+	max-width: 85%;
 	margin-bottom: 3em;
 	text-align: left;
 }
-
-.bobo>p {
-	margin: 0 1em;
-}
-
-.bing .throttling {
+.adaptiveCardsFatherDIV .throttling {
 	text-align: end;
 	font-size: 0.4em;
 	margin-top: 0.5em;
 	margin-bottom: -2em;
 	border-top: 1px solid #0000005c;
 }
-
-.InternalSearchQuery {
-	margin-bottom: 1em;
-	margin-left: 1em;
-	font-size: 1.3em;
-}
-
-#chat .error {
-	text-align: center;
-	color: red;
-}
-
-#chat .smallTextBlock {
+.bing>.sourceAttributions {
 	font-size: 1.2em;
 	max-width: 85%;
-	margin-top: -2.5em;
+	margin: 0;
+	margin-top: -2em;
 	margin-bottom: 2em;
+	display: inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	background-color: #000fff12;
+	border-radius: 2em;
+	padding: 0.5em;
 }
 
-#chat .smallTextBlock a {
+
+.bing>.sourceAttributions>a {
 	display: inline-block;
-	background-color: #7600ff1a;
+	background-color: #ffffff69;
 	border-radius: 1em;
 	padding: 0.5em;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	margin: 0.1em;
+	color: #000000;
+	text-decoration: none;
+	transition: flex 0.5s;
 }
 
-#chat .smallTextBlock p {
-	margin: 0;
-	display: inline-flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: center;
-	background-color: #ffffff61;
-	border-radius: 2em;
-	padding: 0.5em;
+.bing>.sourceAttributions>a:hover{
+	background-color: #ffffffb3;
+	flex: none;
 }
+
+
+
+
+#chat .error {
+	text-align: center;
+	color: red;
+}
+
+
+
+
+

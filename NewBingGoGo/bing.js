@@ -1,14 +1,6 @@
 var chat = document.getElementById('chat');
+var searchSuggestions = document.getElementById('SearchSuggestions');
 
-//在元素后插入新元素
-function insertAfter(newElement, targetElement) {
-	var parent = targetElement.parentNode;
-	if (parent.lastChild == targetElement) {
-		parent.appendChild(newElement);
-	} else {
-		parent.insertBefore(newElement, targetElement.nextSibling);
-	}
-}
 //(json)
 function updateType2(json){
 	if(json.item.result.value=='Throttled'){
@@ -17,92 +9,6 @@ function updateType2(json){
 	}else{
 		console.log(JSON.stringify(json));
 	}
-}
-
-//(json)
-function updateBingChat(argument) {
-	/*
-	 */
-	let id = argument.requestId;
-	let box = document.getElementById(id + 'box');
-	if (!box) {
-		box = document.createElement('div');
-		box.classList.add('bing');
-		box.id = id + 'box';
-		chat.appendChild(box);
-	}
-
-	let bobo = document.getElementById(id);
-	if (!bobo) {
-		bobo = document.createElement('div');
-		bobo.id = id;
-		bobo.classList.add('bobo');
-		box.appendChild(bobo);
-	}
-
-	let message = bobo.getElementsByClassName('message')[0];
-	if (!message) {
-		message = document.createElement('div');
-		message.classList.add('message');
-		message.classList.add('markdown-body')
-		bobo.appendChild(message);
-	}
-
-	let throttling = bobo.getElementsByClassName('throttling')[0];
-	if (!throttling) {
-		throttling = document.createElement('div');
-		throttling.classList.add('throttling');
-		bobo.appendChild(throttling);
-	}
-
-	if (argument.throttling) {
-		throttling.innerHTML =
-			`${argument.throttling.numUserMessagesInConversation} / ${argument.throttling.maxNumUserMessagesInConversation}`;
-	}
-
-	if (argument.messages) {
-		let mestext = argument.messages[0];
-		if (mestext) {
-			if (!mestext.messageType) {
-				let bodys = mestext.adaptiveCards[0].body;
-				for (let i in bodys) {
-					body = bodys[i];
-					if (body.type == 'TextBlock') {
-						if (!body.size) {
-							message.innerHTML = marked.marked(body.text);
-						} else if (body.size = 'small') {
-							setSmallTextBlock(box, body.text, id);
-						}
-					}
-				}
-			} else if (mestext.messageType == 'InternalSearchQuery') {
-				addInternalSearchQuery(box, mestext.spokenText);
-			}
-		}
-	}
-}
-/**
- * 添加引用内容
- */
-function setSmallTextBlock(box, text, id) {
-	let smallTextBlock = document.getElementById(id + 'smallTextBlock');
-	if (!smallTextBlock) {
-		smallTextBlock = document.createElement('div');
-		smallTextBlock.id = id + 'smallTextBlock';
-		smallTextBlock.classList.add('smallTextBlock');
-		insertAfter(smallTextBlock, box);
-	}
-	smallTextBlock.innerHTML = marked.marked(text);
-}
-
-/*
-添加收索内容
-*/
-function addInternalSearchQuery(box, spokenText) {
-	let intqury = document.createElement('div');
-	intqury.classList.add('InternalSearchQuery');
-	intqury.innerHTML = spokenText;
-	box.parentNode.insertBefore(intqury, box);
 }
 
 //(string)
@@ -124,14 +30,22 @@ function addError(message) {
 	chat.appendChild(go);
 }
 
+let onMessageIsOKClose = false;
 //(json)
 function onMessage(json, returnMessage) {
-	if (json.type == 3) {
-		returnMessage.getCatWebSocket().close(1000, 'ok');
+	if(json.type == "close"){
 		isSpeakingFinish();
+		if(!onMessageIsOKClose){
+			addError("聊天异常中断了！可能是网络问题。");
+		}
+		return;
+	}
+	onMessageIsOKClose = false
+	if (json.type == 3) {
+		onMessageIsOKClose = true;
+		returnMessage.getCatWebSocket().close(1000, 'ok');
 	} else if (json.type == 1) {
-		let argument = json.arguments[0];
-		updateBingChat(argument);
+		porserArguments(json.arguments);
 	}else if(json.type == 2){
 		updateType2(json);
 	} else {
@@ -152,28 +66,20 @@ var isSpeaking = false;
 function isAskingToMagic(){
 	isSpeaking = true;
 	send_button.value = '正在请求魔法.';
+	searchSuggestions.innerHTML = '';
 }
 
 function isSpeakingStart(){
 	isSpeaking = true;
 	send_button.value = '正在响应.';
+	searchSuggestions.innerHTML = '';
 }
 
 function isSpeakingFinish(){
 	isSpeaking = false;
 	send_button.value = '发送';
 }
-
-send_button.onclick = () => {
-	if(isSpeaking){
-		return;
-	}
-	let text = input_text.value;
-	input_text.value = '';
-	if (!text) {
-		alert('什么都没有输入呀！');
-		return;
-	}
+function send(text){
 	addMyChat(text);
 	if (!talk) {
 		isAskingToMagic();
@@ -204,6 +110,19 @@ send_button.onclick = () => {
 		}
 		returnMessage = r.obj;
 	}
+}
+
+send_button.onclick = () => {
+	if(isSpeaking){
+		return;
+	}
+	let text = input_text.value;
+	input_text.value = '';
+	if (!text) {
+		alert('什么都没有输入呀！');
+		return;
+	}
+	send(text);
 };
 
 restart_button.onclick = () => {
@@ -214,16 +133,36 @@ restart_button.onclick = () => {
 	returnMessage = undefined;
 	talk = undefined;
 	chat.innerHTML = `
-<div class="bing">
-	<div class="bobo">
-		<div class="message">
-			我已经准备好啦！快和我聊天吧！
-		</div>
-		<div class="throttling">
-			0 / 0
+<div id="chat">
+	<div class="bing">
+		<div class="adaptiveCardsFatherDIV">
+			<div class="textBlock markdown-body">
+				我已经准备好啦！快和我聊天吧！
+			</div>
+			<div class="throttling">
+				0 / 0
+			</div>
 		</div>
 	</div>
 </div>
 	`;
 	isSpeakingFinish();
 };
+
+
+
+
+// 定义一个函数处理滚动事件
+function handleScroll() {
+  // 获取文档的高度和滚动距离
+  var docHeight = document.body.scrollHeight;
+  var scrollPos = window.pageYOffset;
+  // 如果滚动到底部，显示元素，否则隐藏元素
+  if (scrollPos + window.innerHeight >= docHeight-50) {
+    searchSuggestions.style.opacity = "100%";
+  } else {
+    searchSuggestions.style.opacity = "0%";
+  }
+}
+// 添加滚动事件监听器
+window.addEventListener("scroll", handleScroll);

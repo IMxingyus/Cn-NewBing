@@ -1,6 +1,6 @@
 {
 	"name": "NewBingGoGo",
-	"description": "newbing的简单聊天插件，可以通过设置魔法链接代理请求创建聊天api。",
+	"description": "newbing的简单聊天插件",
 	"version": "1.0",
 	"manifest_version": 3,
 	"permissions": [
