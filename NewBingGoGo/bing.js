@@ -147,6 +147,7 @@ restart_button.onclick = () => {
 </div>
 	`;
 	isSpeakingFinish();
+	searchSuggestions.innerHTML = '';
 };
 
 
