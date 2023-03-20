@@ -1,6 +1,7 @@
 # NewBingGoGo : 简单开始和NewBing聊天
 
 ![和newbing聊天的图片](./ReadMeImg/1.png)
+![和newbing聊天的图片](./ReadMeImg/1.1.png)
 
 
 ## 使用方法

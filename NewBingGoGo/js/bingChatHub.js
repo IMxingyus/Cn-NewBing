@@ -20,6 +20,44 @@ function getUuid() {
   return URL.createObjectURL(new Blob()).split('/')[3];
 }
 
+//聊天选项
+let chatTypes = {
+	//更有创造力选项
+	create:[
+		"nlu_direct_response_filter",
+		"deepleo",
+		"disable_emoji_spoken_text",
+		"responsible_ai_policy_235",
+		"enablemm",
+		"h3imaginative",
+		"hubcancel",
+		"dv3sugg"
+	],
+	//balance 平衡模式选项
+	balance:[
+		"nlu_direct_response_filter",
+		"deepleo",
+		"disable_emoji_spoken_text",
+		"responsible_ai_policy_235",
+		"enablemm",
+		"harmonyv3",
+		"hubcancel",
+		"dv3sugg",
+		"localansgnd"
+	],
+	//精准选项
+	accurate:[
+		"nlu_direct_response_filter",
+		"deepleo",
+		"disable_emoji_spoken_text",
+		"responsible_ai_policy_235",
+		"enablemm",
+		"h3precise",
+		"hubcancel",
+		"dv3sugg"
+	]
+}
+
 class SendMessageManager {
 	//(会话id，客户端id，签名id，是否是开始)
 	//(string,string,string,boolena)
@@ -29,7 +67,14 @@ class SendMessageManager {
 		this.conversationId = conversationId;
 		this.clientId = clientId;
 		this.conversationSignature = conversationSignature;
+		this.optionsSets = chatTypes.balance;
 	}
+
+	//chatTypes中的一种
+	setChatType(chatType){
+		this.optionsSets = chatType;
+	}
+
 	//发送json数据
 	sendJson(chatWebSocket, json) {
 		let go = JSON.stringify(json) + '\u001e';
@@ -77,10 +122,7 @@ class SendMessageManager {
 		let json = {
 			"arguments": [{
 				"source": "cib",
-				"optionsSets": ["nlu_direct_response_filter", "deepleo", "disable_emoji_spoken_text",
-					"responsible_ai_policy_235", "enablemm", "harmonyv3", "glprompt", "jbf",
-					"hubcancel", "dv3sugg"
-				],
+				"optionsSets": this.optionsSets,
 				"allowedMessageTypes": ["Chat", "InternalSearchQuery", "InternalSearchResult",
 					"Disengaged",
 					"InternalLoaderMessage", "RenderCardRequest", "AdsQuery", "SemanticSerp",
@@ -205,9 +247,13 @@ class ReturnMessage {
 }
 //处理聊天的类
 class Chat {
-	//(string,string,string)
-	constructor(charID, clientId, conversationSignature) {
+	//theChatType chatTypes变量中的其中一个
+	//(string,string,string,int)
+	constructor(charID, clientId, conversationSignature,theChatType) {
 		this.sendMessageManager = new SendMessageManager(charID, clientId, conversationSignature);
+		if(theChatType){
+			this.sendMessageManager.setChatType(theChatType);
+		}
 	}
 	/**
 	 * 返回
@@ -233,6 +279,7 @@ class Chat {
 				obj: new ReturnMessage(chatWebSocket,onMessage)
 			};
 		} catch (e) {
+			console.warn(e)
 			return {
 				ok: false,
 				message: "发生错误,可能是网络连接错误:" + e.message
@@ -260,7 +307,7 @@ async function getMagicUrl() {
 	 obj:Cat对象
  }
  */
-async function createChat() {
+async function createChat(theChatType) {
 	//设置cookies到魔法链接
 	let magicUrl = await getMagicUrl();
 	if (!magicUrl) {
@@ -319,9 +366,10 @@ async function createChat() {
 		return {
 			ok: true,
 			message: 'ok',
-			obj: new Chat(resjson.conversationId, resjson.clientId, resjson.conversationSignature)
+			obj: new Chat(resjson.conversationId, resjson.clientId, resjson.conversationSignature,theChatType)
 		};
 	} catch (e) {
+		console.warn(e);
 		return {
 			ok: false,
 			message: "发生错误,可能是魔法链接无法链接:" + e.message

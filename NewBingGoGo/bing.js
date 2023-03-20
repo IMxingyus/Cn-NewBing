@@ -1,5 +1,7 @@
 var chat = document.getElementById('chat');
 var searchSuggestions = document.getElementById('SearchSuggestions');
+var chatTypeDiv = document.getElementById('chatTypeDiv');
+var thisChatType;
 
 reSetStartChatMessage();
 reSetSearchSuggestions();
@@ -83,10 +85,11 @@ function isSpeakingFinish(){
 	send_button.value = '发送';
 }
 function send(text){
+	chatTypeDiv.style.opacity = 0;
 	addMyChat(text);
 	if (!talk) {
 		isAskingToMagic();
-		createChat().then((r) => {
+		createChat(thisChatType).then((r) => {
 			if (!r.ok) {
 				isSpeakingFinish();
 				addError(r.message);
@@ -139,6 +142,7 @@ restart_button.onclick = () => {
 	reSetStartChatMessage();
 	isSpeakingFinish();
 	reSetSearchSuggestions();
+	chatTypeDiv.style.opacity = 1;
 };
 
 function reSetStartChatMessage(){
@@ -173,6 +177,7 @@ function reSetSearchSuggestions(){
 
 
 
+//滚动到底部显示收聊天建议
 
 // 定义一个函数处理滚动事件
 function handleScroll() {
@@ -188,3 +193,44 @@ function handleScroll() {
 }
 // 添加滚动事件监听器
 window.addEventListener("scroll", handleScroll);
+
+
+
+
+//选择聊天类型，创造力，平衡，精准
+let backgroundDIV = document.getElementById('background');
+let chatTypeChoseCreate = document.getElementById('chatTypeChoseCreate');
+let chatTypeChoseBalance = document.getElementById('chatTypeChoseBalance');
+let chatTypeChoseAccurate = document.getElementById('chatTypeChoseAccurate');
+//默认平衡
+thisChatType = chatTypes.balance;
+chatTypeChoseCreate.onclick = ()=>{
+	if(chatTypeDiv.style.opacity == 0){
+		return;
+	}
+	chatTypeChoseCreate.classList.add('Chose');
+	chatTypeChoseBalance.classList.remove('Chose');
+	chatTypeChoseAccurate.classList.remove('Chose');
+	thisChatType = chatTypes.create;
+	backgroundDIV.className = 'a';
+}
+chatTypeChoseBalance.onclick = ()=>{
+	if(chatTypeDiv.style.opacity == 0){
+		return;
+	}
+	chatTypeChoseCreate.classList.remove('Chose');
+	chatTypeChoseBalance.classList.add('Chose');
+	chatTypeChoseAccurate.classList.remove('Chose');
+	thisChatType = chatTypes.balance;
+	backgroundDIV.className = 'b';
+}
+chatTypeChoseAccurate.onclick = ()=>{
+	if(chatTypeDiv.style.opacity == 0){
+		return;
+	}
+	chatTypeChoseCreate.classList.remove('Chose');
+	chatTypeChoseBalance.classList.remove('Chose');
+	chatTypeChoseAccurate.classList.add('Chose');
+	thisChatType = chatTypes.accurate;
+	backgroundDIV.className = 'c';
+}
