@@ -46,10 +46,10 @@
 	filter: hue-rotate(10deg);
 }
 #background.b{
-	filter: hue-rotate(0deg);
+	filter: hue-rotate(-5deg);
 }
 #background.c{
-	filter: hue-rotate(-10deg);
+	filter: hue-rotate(-20deg);
 }
 
 /* 尾部分 */
