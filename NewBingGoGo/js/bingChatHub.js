@@ -298,6 +298,73 @@ async function getMagicUrl() {
 	return (await chrome.storage.local.get('GoGoUrl')).GoGoUrl;
 }
 
+//获取newbing权限
+async function getPower(){
+	//设置cookies到魔法链接
+	let magicUrl = await getMagicUrl();
+	if (!magicUrl) {
+		return {
+			ok: false,
+			message: "需要设置魔法链接才能获取权限哦！"
+		};
+	}
+	if(!expUrl.test(magicUrl)){
+		return {
+			ok: false,
+			message: "魔法链接不正确！请修改魔法链接。"
+		};
+	}
+	await copyCookies(magicUrl);
+
+	try{
+		let url = magicUrl;
+		if(!url.endsWith('/')){
+			url = url+'/';
+		}
+		url = url + 'bingcopilotwaitlist';
+		await fetch(url);
+		return {
+			ok: true,
+			message: "ok"
+		};
+	} catch (e) {
+		console.warn(e);
+		return {
+			ok: false,
+			message: "发生错误,可能是魔法链接无法链接:" + e.message
+		};
+	}
+}
+
+
+async function copyCookies(magicUrl){
+	let cookiesjson = [];
+	let fr = [".bing.com"];
+	for (let i = 0; i < fr.length; i++) {
+		let cookies = await chrome.cookies.getAll({
+			domain: fr[i]
+		});
+		cookies.map((m) => {
+			cookiesjson[cookiesjson.length] = {
+				domain: m.domain,
+				name: m.name,
+				value: m.value,
+				path: m.path
+			};
+		});
+	}
+	for (let co in cookiesjson) {
+		let r = {
+			url: magicUrl,
+			//domain: cookiesjson[co].domain,
+			name: cookiesjson[co].name,
+			value: cookiesjson[co].value,
+			path: cookiesjson[co].path
+		}
+		await chrome.cookies.set(r);
+	}
+}
+
 //创建一个新对话
 /**
  返回结构，如果ok等于false则无chat对象
@@ -322,45 +389,33 @@ async function createChat(theChatType) {
 			message: "魔法链接不正确！请修改魔法链接。"
 		};
 	}
-	let cookiesjson = [];
-	let fr = [".bing.com"];
-	for (let i = 0; i < fr.length; i++) {
-		let cookies = await chrome.cookies.getAll({
-			domain: fr[i]
-		});
-		cookies.map((m) => {
-			cookiesjson[cookiesjson.length] = {
-				domain: m.domain,
-				name: m.name,
-				value: m.value,
-				path: m.path
-			};
-		});
-	}
-	for (let co in cookiesjson) {
-		let r = {
-			url: magicUrl,
-			//domain: cookiesjson[co].domain,
-			name: cookiesjson[co].name,
-			value: cookiesjson[co].value,
-			path: cookiesjson[co].path
-		}
-		chrome.cookies.set(r);
-	}
+	await copyCookies(magicUrl);
 	
 	try {
 		let res = await fetch(magicUrl);
 		let resjson = await res.json();
 		if (!resjson.result) {
+			console.warn(resjson);
 			return {
 				ok: false,
 				message: "未知错误！"
 			};
 		}
 		if (resjson.result.value != 'Success') {
+			let type = resjson.result.value;
+			let mess = resjson.result.message;
+			if(resjson.result.value=='UnauthorizedRequest'){
+				type = 'NoLogin'
+				mess = '首先你需要在bing登录微软账号！请前往 https://cn.bing.com/ 登录微软账号。';
+			}else if(resjson.result.value=='Forbidden'){
+				type = 'NoPower'
+				mess = '你还没有获得NewBing的使用权限';
+			}
+			console.warn(resjson);
 			return {
 				ok: false,
-				message: resjson.result.message.replace('Sorry, you need to login first to access this service.','首先你需要在bing登录微软账号！请前往 https://cn.bing.com/ 登录微软账号。')
+				type:type,
+				message: mess
 			};
 		}
 		return {

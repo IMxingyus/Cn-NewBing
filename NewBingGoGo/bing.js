@@ -35,6 +35,28 @@ function addError(message) {
 	chat.appendChild(go);
 }
 
+//尝试获取聊天权限按钮
+function addNoPower(){
+	let go = document.createElement('div');
+	go.classList.add('NoPower');
+	go.innerHTML = '点击尝试申请加入候补名单获取NewBing聊天权限';
+	chat.appendChild(go);
+	go.onclick = ()=>{
+		if(go.geting){
+			return;
+		}
+		go.geting = true;
+		go.innerHTML = '正在请求申请加入候补名单..';
+		getPower().then((rett)=>{
+			if(rett.ok==true){
+				go.innerHTML = '请求成功！请刷新页面重试，如果无权限使用请等待几天后重试。'
+				return;
+			}
+			go.innerHTML = '发生错误：'+rett.message;
+		});
+	}
+}
+
 let onMessageIsOKClose = false;
 //(json)
 function onMessage(json, returnMessage) {
@@ -91,8 +113,11 @@ function send(text){
 		isAskingToMagic();
 		createChat(thisChatType).then((r) => {
 			if (!r.ok) {
-				isSpeakingFinish();
 				addError(r.message);
+				if(r.type=='NoPower'){
+					addNoPower();
+				}
+				isSpeakingFinish();
 				return;
 			}
 			talk = r.obj;

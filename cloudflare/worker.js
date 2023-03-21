@@ -4,6 +4,7 @@ export default {
 	}
 }
 
+let bingcopilotwaitlist = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/bingcopilotwaitlist');
 /**
  * Respond to the request
  * @param {Request} request
@@ -27,5 +28,9 @@ async function handleRequest(request) {
 			fp.headers[key] = value;
 		}
 	}
-	return await fetch('https://www.bing.com/turing/conversation/create', fp);
+	if(bingcopilotwaitlist.test(request.url)){
+		return await fetch('https://www.bing.com/msrewards/api/v1/enroll?publ=BINGIP&crea=MY00IA&pn=bingcopilotwaitlist&partnerId=BingRewards&pred=true&wtc=MktPage_MY0291', fp);
+	}else{
+		return await fetch('https://www.bing.com/turing/conversation/create', fp);
+	}
 }

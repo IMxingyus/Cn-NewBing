@@ -286,6 +286,14 @@
 	color: red;
 }
 
+.NoPower{
+	text-align: center;
+    color: #ff6d00;
+    cursor: pointer;
+    margin: 1em;
+    text-decoration: underline;
+}
+
 
 
 
