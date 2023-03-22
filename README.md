@@ -1,7 +1,7 @@
 # NewBingGoGo : 简单开始和NewBing聊天
 
-![和newbing聊天的图片](./ReadMeImg/1.png)
-![和newbing聊天的图片](./ReadMeImg/1.1.png)
+![和newbing聊天的图片](./docs/img/1.png)
+![和newbing聊天的图片](./docs/img/1.1.png)
 
 
 ## 使用方法
@@ -16,15 +16,15 @@
 4.开始愉快的聊天
 
 ### 详细步骤
-![](./ReadMeImg/4.png)
-![](./ReadMeImg/5.png)
-![](./ReadMeImg/6.png)
+![](./docs/img/4.png)
+![](./docs/img/5.png)
+![](./docs/img/6.png)
 我的魔法链接是下面这个，但是强烈不推荐大家用我的。建议自己创建最好的，或者用朋友的，创建的方法在最后面有写。（如果你们都用我的，小心把你们的Cookit全部存起来干好事awa）下面有cloudflareWorker创建魔法链接的教程。
 ~~~
 https://mybing.xn--xyza.top/
 ~~~
-![](./ReadMeImg/7.png)
-![](./ReadMeImg/8.png)
+![](./docs/img/7.png)
+![](./docs/img/8.png)
 之后就进入到聊天页面啦！如果没用登录bing就去bing登录一下，插件会自动读取Cookit之后就可以用啦。
 
 
@@ -34,7 +34,7 @@ https://mybing.xn--xyza.top/
 
 ## 技术原理
 
-[技术原理.md](./%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86.md)
+[技术原理.md](./docs/%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86.md)
 
 ## 魔法链接
 我的魔法链接是下面这个，但是强烈不推荐大家用我的。建议自己创建最好的，或者用朋友的（如果你们都用我的，小心把你们的Cookit全部存起来干好事awa）
@@ -42,7 +42,7 @@ https://mybing.xn--xyza.top/
 https://mybing.xn--xyza.top/
 ~~~
 
-[CloudflareWorker创建创建魔法链接.md](./CloudflareWorker%E5%88%9B%E5%BB%BA%E5%88%9B%E5%BB%BA%E9%AD%94%E6%B3%95%E9%93%BE%E6%8E%A5.md)
+[CloudflareWorker创建创建魔法链接.md](./docs/CloudflareWorker%E5%88%9B%E5%BB%BA%E5%88%9B%E5%BB%BA%E9%AD%94%E6%B3%95%E9%93%BE%E6%8E%A5.md)
 
 ## 关于
 

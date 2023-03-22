@@ -4,13 +4,13 @@
 https://workers.cloudflare.com/
 ~~~
 登录完之后
-![](./ReadMeImg/9.png)
-![](./ReadMeImg/10.png)
-![](./ReadMeImg/11.png)
-把代码粘贴进去，代码在这 [worker.js](./cloudflare/worker.js)
-![](./ReadMeImg/12.png)
+![](./img/9.png)
+![](./img/10.png)
+![](./img/11.png)
+把代码粘贴进去，代码在这 [worker.js](../cloudflare/worker.js)
+![](./img/12.png)
 下面这张照片显示的就是你的魔法链接
-![](./ReadMeImg/13.png)
+![](./img/13.png)
 
 .workers.dev 结尾的域名在国内DNS被污染得很严重，甚至有些地区完全无法访问，建议绑定一个自己的域名，这样访问速度更快。当然你可以通过设置host文件解决这个问题，这里我就不细说了。
 
