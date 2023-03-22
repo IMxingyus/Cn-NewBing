@@ -18,12 +18,14 @@ function updateType2(json){
 
 //(string)
 function addMyChat(message) {
+	let bobo = document.createElement('div');
+	bobo.style.whiteSpace = 'pre-wrap';
+	bobo.innerText = message;
+	bobo.classList.add('bobo');
+	bobo.classList.add('markdown-body');
 	let go = document.createElement('div');
 	go.classList.add('my');
-	go.innerHTML = `
-	<div class="bobo">
-		<div class="markdown-body">${message.replaceAll('\n','<br>').replaceAll(" ","&nbsp;")}</div>
-	</div>`
+	go.appendChild(bobo);
 	chat.appendChild(go);
 }
 
