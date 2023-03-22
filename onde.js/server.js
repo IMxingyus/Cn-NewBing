@@ -27,7 +27,6 @@ async function handleRequest(request,response) {
 	}else{
 		res = await fetch('https://www.bing.com/turing/conversation/create', fp);
 	}
-	console.log(request.url);
 	response.writeHead(res.status,res.headers);
 	response.write(await res.text());
 	response.end();
