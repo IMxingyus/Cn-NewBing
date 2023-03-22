@@ -1,8 +1,6 @@
 
 const fetch = require('node-fetch');
-var http = require('http');
-
-let bingcopilotwaitlist = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/bingcopilotwaitlist');
+const http = require('http');
 http.createServer(handleRequest).listen(8443);
 async function handleRequest(request,response) {
 	//console.log(request.headers);
