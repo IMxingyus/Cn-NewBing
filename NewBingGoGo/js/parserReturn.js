@@ -65,7 +65,7 @@ function porserMessages(messages, father) {
         //解析adaptiveCards 也就是聊天消息部分
         if (message.adaptiveCards) {
             if(!message.messageType){
-                let adaptiveCardsFatherDIV = getByClass('adaptiveCardsFatherDIV', 'div', father);
+                let adaptiveCardsFatherDIV = getByID(message.messageId, 'div', father,'adaptiveCardsFatherDIV');
                 porserAdaptiveCards(message.adaptiveCards, adaptiveCardsFatherDIV);
             }else if(message.messageType=='InternalSearchQuery'){
                 let div = document.createElement('div');
@@ -84,7 +84,7 @@ function porserMessages(messages, father) {
         //解析sourceAttributions 也就是引用链接部分
         if (message.sourceAttributions) {
             if(message.sourceAttributions.length>0){
-                let sourceAttributionsDIV = getByClass('sourceAttributions', 'div', father);
+                let sourceAttributionsDIV = getByID(message.messageId+'sourceAttributions', 'div', father,'sourceAttributions');
                 porserSourceAttributions(message.sourceAttributions, sourceAttributionsDIV);
             }
         }
