@@ -222,6 +222,21 @@ class ReturnMessage {
 					try{
 						this.onMessage[i]({
 							type: 'close',
+							mess : '连接关闭'
+						},this);
+					}catch(e){
+						console.warn(e)
+					}
+				}
+			}
+		}
+		catWebSocket.onerror =(mess)=>{
+			console.log(mess);
+			for (let i in this.onMessage) {
+				if ((typeof this.onMessage[i]) == 'function') {
+					try{
+						this.onMessage[i]({
+							type: 'error',
 							mess :mess
 						},this);
 					}catch(e){
@@ -249,7 +264,8 @@ class ReturnMessage {
 class Chat {
 	//theChatType chatTypes变量中的其中一个
 	//(string,string,string,int)
-	constructor(charID, clientId, conversationSignature,theChatType) {
+	constructor(magicUrl,charID, clientId, conversationSignature,theChatType) {
+		this.magicUrl = magicUrl;
 		this.sendMessageManager = new SendMessageManager(charID, clientId, conversationSignature);
 		if(theChatType){
 			this.sendMessageManager.setChatType(theChatType);
@@ -268,7 +284,7 @@ class Chat {
 	//(string,function:可以不传)
 	sendMessage(message,onMessage) {
 		try {
-			let chatWebSocket = new WebSocket("wss://sydney.bing.com/sydney/ChatHub");
+			let chatWebSocket = new WebSocket(URLTrue(this.magicUrl.replace('http','ws'),"ChatHub"));
 			chatWebSocket.onopen = () => {
 				this.sendMessageManager.sendShakeHandsJson(chatWebSocket);
 				this.sendMessageManager.sendChatMessage(chatWebSocket, message);
@@ -298,6 +314,18 @@ async function getMagicUrl() {
 	return (await chrome.storage.local.get('GoGoUrl')).GoGoUrl;
 }
 
+/***
+ * 补齐url
+ */
+function URLTrue(magicUrl,thiePath){
+	let url = magicUrl;
+		if(!url.endsWith('/')){
+			url = url+'/';
+		}
+	url = url + thiePath;
+	return url;
+}
+
 //获取newbing权限
 async function getPower(){
 	//设置cookies到魔法链接
@@ -317,12 +345,7 @@ async function getPower(){
 	await copyCookies(magicUrl);
 
 	try{
-		let url = magicUrl;
-		if(!url.endsWith('/')){
-			url = url+'/';
-		}
-		url = url + 'bingcopilotwaitlist';
-		await fetch(url);
+		await fetch(URLTrue(magicUrl,'bingcopilotwaitlist'));
 		return {
 			ok: true,
 			message: "ok"
@@ -392,7 +415,7 @@ async function createChat(theChatType) {
 	await copyCookies(magicUrl);
 	
 	try {
-		let res = await fetch(magicUrl);
+		let res = await fetch(URLTrue(magicUrl,'Create'));
 		let resjson = await res.json();
 		if (!resjson.result) {
 			console.warn(resjson);
@@ -421,7 +444,7 @@ async function createChat(theChatType) {
 		return {
 			ok: true,
 			message: 'ok',
-			obj: new Chat(resjson.conversationId, resjson.clientId, resjson.conversationSignature,theChatType)
+			obj: new Chat(magicUrl,resjson.conversationId, resjson.clientId, resjson.conversationSignature,theChatType)
 		};
 	} catch (e) {
 		console.warn(e);

@@ -69,6 +69,12 @@ function onMessage(json, returnMessage) {
 		}
 		return;
 	}
+	if(json.type == 'error'){
+		if(!onMessageIsOKClose){
+			addError("连接发生错误："+json.mess);
+		}
+		return;
+	}
 	onMessageIsOKClose = false
 	if (json.type == 3) {
 		onMessageIsOKClose = true;
