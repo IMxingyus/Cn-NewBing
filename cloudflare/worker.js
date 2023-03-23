@@ -19,7 +19,7 @@ async function handleRequest(request) {
 	}
 
 	//保留头部信息
-	const dropHeaders = ['cookie','user-agent:'];
+	const dropHeaders = ['cookie','user-agent'];
 	let he = reqHeaders.entries();
 	for (let h of he) {
 		const key = h[0],
