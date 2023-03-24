@@ -264,8 +264,9 @@ class ReturnMessage {
 class Chat {
 	//theChatType chatTypes变量中的其中一个
 	//(string,string,string,int)
-	constructor(magicUrl,charID, clientId, conversationSignature,theChatType) {
+	constructor(magicUrl,chatWithMagic,charID, clientId, conversationSignature,theChatType) {
 		this.magicUrl = magicUrl;
+		this.chatWithMagic = chatWithMagic;
 		this.sendMessageManager = new SendMessageManager(charID, clientId, conversationSignature);
 		if(theChatType){
 			this.sendMessageManager.setChatType(theChatType);
@@ -284,7 +285,11 @@ class Chat {
 	//(string,function:可以不传)
 	sendMessage(message,onMessage) {
 		try {
-			let chatWebSocket = new WebSocket(URLTrue(this.magicUrl.replace('http','ws'),"ChatHub"));
+			let restsrstUrl = 'wss://sydney.bing.com/sydney/ChatHub';
+			if(this.chatWithMagic){
+				restsrstUrl = URLTrue(this.magicUrl.replace('http','ws'),"ChatHub");
+			}
+			let chatWebSocket = new WebSocket(restsrstUrl);
 			chatWebSocket.onopen = () => {
 				this.sendMessageManager.sendShakeHandsJson(chatWebSocket);
 				this.sendMessageManager.sendChatMessage(chatWebSocket, message);
@@ -292,7 +297,8 @@ class Chat {
 			return {
 				ok: true,
 				message: 'ok',
-				obj: new ReturnMessage(chatWebSocket,onMessage)
+				obj: new ReturnMessage(chatWebSocket,onMessage),
+				chatWithMagic:this.chatWithMagic
 			};
 		} catch (e) {
 			console.warn(e)
@@ -312,6 +318,9 @@ async function setMagicUrl(url) {
 
 async function getMagicUrl() {
 	return (await chrome.storage.local.get('GoGoUrl')).GoGoUrl;
+}
+async function getChatHubWithMagic(){
+	return (await chrome.storage.local.get('ChatHubWithMagic')).ChatHubWithMagic;
 }
 
 /***
@@ -399,6 +408,7 @@ async function copyCookies(magicUrl){
  */
 async function createChat(theChatType) {
 	//设置cookies到魔法链接
+	let chatWithMagic = await getChatHubWithMagic();
 	let magicUrl = await getMagicUrl();
 	if (!magicUrl) {
 		return {
@@ -444,7 +454,7 @@ async function createChat(theChatType) {
 		return {
 			ok: true,
 			message: 'ok',
-			obj: new Chat(magicUrl,resjson.conversationId, resjson.clientId, resjson.conversationSignature,theChatType)
+			obj: new Chat(magicUrl,chatWithMagic,resjson.conversationId, resjson.clientId, resjson.conversationSignature,theChatType)
 		};
 	} catch (e) {
 		console.warn(e);

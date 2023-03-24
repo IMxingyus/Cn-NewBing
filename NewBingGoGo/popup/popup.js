@@ -8,6 +8,7 @@ var url_input = document.querySelector('input#url-input');
 var savecookiesButtun = document.querySelector('input#savecookies');
 var loadcookiesButtun = document.querySelector('input#loadcookies');
 var speak = document.querySelector('p#speak');
+var tallSelect = document.querySelector('select#tallSelect');
 
 var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+');
 var magicUrl;
@@ -32,6 +33,15 @@ async function getUrl() {
 	return (await chrome.storage.local.get('GoGoUrl')).GoGoUrl;
 }
 
+async function setChatHubWithMagic(user){
+	return await chrome.storage.local.set({
+		ChatHubWithMagic : user
+	});
+}
+async function getChatHubWithMagic(){
+	return (await chrome.storage.local.get('ChatHubWithMagic')).ChatHubWithMagic;
+}
+
 function speakString() {
 	if (!magicUrl) {
 		speak.innerHTML = '我没有角角,需要魔法链接才能帮你哦。';
@@ -50,3 +60,23 @@ getUrl().then((v) => {
 	speakString(v);
 	loaded();
 });
+
+getChatHubWithMagic().then((chatWithMagic)=>{
+	if(!chatWithMagic){
+		tallSelect.selectedIndex = 0;
+	}else{
+		tallSelect.selectedIndex = 1;
+	}
+	tallSelect.onchange= ()=>{
+		switch (tallSelect.selectedIndex) {
+			case 0:
+				setChatHubWithMagic(false);
+				break;
+			case 1:
+				setChatHubWithMagic(true);
+				break;
+		}
+	}
+});
+
+

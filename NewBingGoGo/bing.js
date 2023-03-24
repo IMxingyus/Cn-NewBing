@@ -100,13 +100,17 @@ var isSpeaking = false;
 
 function isAskingToMagic(){
 	isSpeaking = true;
-	send_button.value = '正在请求魔法.';
+	send_button.value = '正在施法.';
 	searchSuggestions.innerHTML = '';
 }
 
-function isSpeakingStart(){
+function isSpeakingStart(chatWithMagic){
 	isSpeaking = true;
-	send_button.value = '正在响应.';
+	if(chatWithMagic){
+		send_button.value = '魔法读心中.';
+	}else{
+		send_button.value = 'bing回应中.';
+	}
 	searchSuggestions.innerHTML = '';
 }
 
@@ -137,6 +141,7 @@ function send(text){
 				return;
 			}
 			returnMessage = r.obj;
+			isSpeakingStart(r.chatWithMagic);
 		});
 		return;
 	} else {
