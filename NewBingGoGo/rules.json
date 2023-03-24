@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "requestHeaders": [
+                {
+                    "header": "Origin",
+                    "operation": "set",
+                    "value": "https://www.bing.com"
+                }
+            ]
+        },
+        "condition": {
+            "regexFilter": "wss?://sydney.bing.com/sydney/ChatHub",
+            "resourceTypes": [
+                "websocket"
+            ]
+        }
+    }
+]
