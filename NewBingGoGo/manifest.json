@@ -30,5 +30,6 @@
 				"path": "rules.json"
 			}
 		]
-	}
+	},
+	"default_locale": "zh_CN"
 }
