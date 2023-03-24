@@ -42,8 +42,7 @@ https://mybing.xn--xyza.top/
 ~~~
 https://mybing.xn--xyza.top/
 ~~~
-
-[CloudflareWorker创建创建魔法链接.md](./docs/CloudflareWorker%E5%88%9B%E5%BB%BA%E5%88%9B%E5%BB%BA%E9%AD%94%E6%B3%95%E9%93%BE%E6%8E%A5.md)
+[创建自己的魔法链接.md](./docs/%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E9%AD%94%E6%B3%95%E9%93%BE%E6%8E%A5.md)
 
 ## 聊天方式
 - 正常聊天 -> 使用魔法创建聊天后不使用魔法了，这种方式速度快，推荐。
