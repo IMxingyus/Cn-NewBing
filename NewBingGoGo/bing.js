@@ -119,6 +119,9 @@ function isSpeakingFinish(){
 	send_button.value = '发送';
 }
 function send(text){
+	if(isSpeaking){
+		return;
+	}
 	chatTypeDiv.style.opacity = 0;
 	addMyChat(text);
 	if (!talk) {
@@ -153,6 +156,7 @@ function send(text){
 			return;
 		}
 		returnMessage = r.obj;
+		isSpeakingStart(r.chatWithMagic);
 	}
 }
 
