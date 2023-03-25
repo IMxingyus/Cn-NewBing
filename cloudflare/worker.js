@@ -9,6 +9,9 @@ let bingCreateEXP = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/
 let bingChatHubEXP = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/ChatHub');
 let bingcopilotwaitlistEXP = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/bingcopilotwaitlist');
 
+let aiDrawCreateExp = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/AiDraw/Create');
+let aiDrawResultsExp = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+/images/create/async/results');
+
 /**
  * Respond to the request
  * @param {Request} request
@@ -23,6 +26,12 @@ async function handleRequest(request) {
 	if (bingcopilotwaitlistEXP.test(request.url)) {
 		return await bingcopilotwaitlist(request)
 	}
+	if(aiDrawCreateExp.test(request.url)){
+		return await aiDrawCreate(request)
+	}
+	if(aiDrawResultsExp.test(request.url)){
+		return await aiDrawResults(request)
+	}
 	return new Response(JSON.stringify({
 		result: {
 			value: 'error',
@@ -35,6 +44,56 @@ async function handleRequest(request) {
 			"content-type": "application/json"
 		}
 	})
+}
+
+async function aiDrawResults(request) {
+	//请求头部、返回对象
+	let reqHeaders = new Headers(request.headers);
+	//构建 fetch 参数
+	let fp = {
+		method: request.method,
+		headers: {
+			"sec-fetch-site":"same-origin",
+            "referer":"https://www.bing.com/images/create?partner=sydney&showselective=1&sude=1&kseed=7000"
+		}
+	}
+
+	//保留头部信息
+	const dropHeaders = ['cookie', 'user-agent'];
+	let he = reqHeaders.entries();
+	for (let h of he) {
+		const key = h[0],
+			value = h[1];
+		if (dropHeaders.includes(key)) {
+			fp.headers[key] = value;
+		}
+	}
+	return await fetch(request.url.replace(aiDrawResultsExp,"https://www.bing.com/images/create/async/results"), fp);
+}
+
+async function aiDrawCreate(request) {
+	//请求头部、返回对象
+	let reqHeaders = new Headers(request.headers);
+	//构建 fetch 参数
+	let fp = {
+		method: request.method,
+		headers: {
+			"sec-fetch-site":"same-origin",
+            "referer":"https://www.bing.com/search?q=bingAI"
+		}
+	}
+
+	//保留头部信息
+	const dropHeaders = ['cookie', 'user-agent'];
+	let he = reqHeaders.entries();
+	for (let h of he) {
+		const key = h[0],
+			value = h[1];
+		if (dropHeaders.includes(key)) {
+			fp.headers[key] = value;
+		}
+	}
+	return await fetch(request.url.replace(aiDrawCreateExp,"https://www.bing.com/images/create"), fp);
 }
 
 async function bingChatHub(request) {

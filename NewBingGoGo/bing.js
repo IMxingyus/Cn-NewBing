@@ -187,7 +187,6 @@ restart_button.onclick = () => {
 
 function reSetStartChatMessage(){
 	chat.innerHTML = `
-	<div id="chat">
 		<div class="bing">
 			<div class="adaptiveCardsFatherDIV">
 				<div class="textBlock markdown-body">
@@ -198,7 +197,6 @@ function reSetStartChatMessage(){
 				</div>
 			</div>
 		</div>
-	</div>
 		`;
 }
 
@@ -274,3 +272,22 @@ chatTypeChoseAccurate.onclick = ()=>{
 	thisChatType = chatTypes.accurate;
 	backgroundDIV.className = 'c';
 }
+
+
+// "resourceTypes": [
+// 	"main_frame",
+// 	"sub_frame",
+// 	"stylesheet",
+// 	"script",
+// 	"image",
+// 	"font",
+// 	"object",
+// 	"xmlhttprequest",
+// 	"ping",
+// 	"csp_report",
+// 	"media",
+// 	"websocket",
+// 	"webtransport",
+// 	"webbundle",
+// 	"other"
+//   ]

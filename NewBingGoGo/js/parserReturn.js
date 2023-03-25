@@ -47,10 +47,12 @@ function porserArguments(argumentss) {
     let chatDiv = document.getElementById('chat');
     for (let i = 0; i < argumentss.length; i++) {
         if (argumentss[i].messages && argumentss[i].requestId) {
-            let nextFather = getByID(argumentss[i].requestId, 'div', chatDiv,'bing');
+            let nextFather = getByID(argumentss[i].requestId, 'div', chatDiv, 'bing');
             porserMessages(argumentss[i].messages, nextFather);
-        }else if(argumentss[i].throttling && argumentss[i].requestId){
+
+        } else if (argumentss[i].throttling && argumentss[i].requestId) {
             throttling = argumentss[i].throttling;
+
         } else {
             console.log('发现一个另类argument', JSON.stringify(argumentss[i]));
         }
@@ -62,38 +64,125 @@ function porserArguments(argumentss) {
 function porserMessages(messages, father) {
     for (let i = 0; i < messages.length; i++) {
         let message = messages[i];
-        //解析adaptiveCards 也就是聊天消息部分
-        if (message.adaptiveCards) {
-            if(!message.messageType){
-                let adaptiveCardsFatherDIV = getByID(message.messageId, 'div', father,'adaptiveCardsFatherDIV');
-                porserAdaptiveCards(message.adaptiveCards, adaptiveCardsFatherDIV);
-            }else if(message.messageType=='InternalSearchQuery'){
-                let div = document.createElement('div');
-                div.classList.add('InternalSearchQuery');
-                father.appendChild(div);
-                porserAdaptiveCards(message.adaptiveCards, div);
-            }else if(message.messageType=='InternalLoaderMessage'){
-                let div = document.createElement('div');
-                div.classList.add('InternalLoaderMessage');
-                father.appendChild(div);
-                porserAdaptiveCards(message.adaptiveCards, div);
-            }else{
-                console.log('发现一个另类message', JSON.stringify(message));
+
+        //解析adaptiveCards 也就是聊天消息部分 下面类型的都是带有adaptiveCards的
+        if (!message.messageType && message.adaptiveCards) {//如果是正常的聊天
+            let adaptiveCardsFatherDIV = getByID(message.messageId, 'div', father, 'adaptiveCardsFatherDIV');
+            porserAdaptiveCards(message.adaptiveCards, adaptiveCardsFatherDIV);
+
+            //解析sourceAttributions 也就是引用链接部分
+            if (message.sourceAttributions) {
+                if (message.sourceAttributions.length > 0) {
+                    let sourceAttributionsDIV = getByID(message.messageId + 'sourceAttributions', 'div', father, 'sourceAttributions');
+                    porserSourceAttributions(message.sourceAttributions, sourceAttributionsDIV);
+                }
             }
-        }
-        //解析sourceAttributions 也就是引用链接部分
-        if (message.sourceAttributions) {
-            if(message.sourceAttributions.length>0){
-                let sourceAttributionsDIV = getByID(message.messageId+'sourceAttributions', 'div', father,'sourceAttributions');
-                porserSourceAttributions(message.sourceAttributions, sourceAttributionsDIV);
+            //解析suggestedResponses 建议发送的消息，聊天建议
+            if (message.suggestedResponses) {
+                porserSuggestedResponses(message.suggestedResponses);
             }
+
+        } else if (message.messageType == 'InternalSearchQuery' && message.adaptiveCards) { //如果是收索消息
+            let div = document.createElement('div');
+            div.classList.add('InternalSearchQuery');
+            father.appendChild(div);
+            porserAdaptiveCards(message.adaptiveCards, div);
+
+        } else if (message.messageType == 'InternalLoaderMessage' && message.adaptiveCards) { //如果是加载消息
+            let div = document.createElement('div');
+            div.classList.add('InternalLoaderMessage');
+            father.appendChild(div);
+            porserAdaptiveCards(message.adaptiveCards, div);
+
+        } else if (message.messageType == 'GenerateContentQuery') {//如果是生成内容查询
+            let div = document.createElement('div');
+            div.classList.add('GenerateContentQuery');
+            father.appendChild(div);
+            generateContentQuery(message, div);
+        } else {
+            console.log('发现一个另类message', JSON.stringify(message));
         }
-        //解析suggestedResponses 建议发送的消息，聊天建议
-        if (message.suggestedResponses) {
-            porserSuggestedResponses(message.suggestedResponses);
-        }
+
     }
 }
+
+/*
+解析generateContentQuery生成内容查询,目前是只有图片
+*/
+function generateContentQuery(message, father) {
+    getMagicUrl().then(async magicUrl => {
+        if (!magicUrl) {
+            addError("魔法链接不正确！无法加载图片");
+            return;
+        }
+        if (!expUrl.test(magicUrl)) {
+            addError("魔法链接不正确！无法加载图片")
+            return;
+        }
+        let theUrls = new URLSearchParams();
+        theUrls.append('re', '1');
+        theUrls.append('showselective', '1');
+        theUrls.append('sude', '1');
+        theUrls.append('kseed', '7500');
+        theUrls.append('SFX', '2');
+        theUrls.append('q', message.text);
+        theUrls.append('iframeid', message.requestId);
+        let theUrl = URLTrue(magicUrl,"AiDraw/Create?") + theUrls.toString();
+        
+        try{
+            father.innerHTML = `正在生成${message.text}的图片.`;
+            let html = (await (await fetch(theUrl)).text());
+            let urr = new RegExp('"/(images/create/async/results/(\\S*))"').exec(html);
+            if(!urr || !urr[1]){
+                urr = new RegExp('class="gil_err_mt">([^<>]*)</div>').exec(html);
+                if(urr || urr[1]){
+                    father.innerHTML = `${urr[1]}`
+                    return;
+                }
+                console.log(html);
+                addError("请求图片返回不正确的页面，无法加载图片。");
+                return;
+            }
+            let ur = urr[1];
+            let imgPageHtmlUrl = URLTrue(magicUrl,ur);
+            let count = 0;
+            let run = async ()=>{
+                father.innerHTML = `正在生成${message.text}的图片.${count}`;
+                if(count>20){
+                    addError("请求图片超时！");
+                    return;
+                }
+                count++;
+                let imgPageHtml;
+                try{
+                    imgPageHtml = (await (await fetch(imgPageHtmlUrl)).text());
+                }catch(e){
+                    console.error(e);
+                }
+                if(!imgPageHtml){
+                    setTimeout(run,3000);
+                    return;
+                }
+                let div = document.createElement("div");
+                div.innerHTML = imgPageHtml;
+                let imgs = div.getElementsByTagName("img");
+                father.innerHTML = '';
+                for(let el=0;el<imgs.length;el++){
+                    let img = document.createElement('img');
+                    img.src = imgs[el].src;
+                    father.appendChild(img);
+                }
+                div.remove();
+            }
+            setTimeout(run,3000);
+            
+        }catch(e){
+            console.error(e);
+            addError("请求图片失败:"+e);
+        }
+    });
+}
+
 /*
 解析adaptiveCards 聊天消息部分
 */
@@ -128,7 +217,7 @@ function porserbody(bodys, father) {
 */
 function porserTextBlock(body, father) {
     if (!body.size) {
-        let div = getByClass('textBlock', 'div', father,'markdown-body');
+        let div = getByClass('textBlock', 'div', father, 'markdown-body');
         div.innerHTML = marked.marked(body.text);
         div = getByClass('throttling', 'div', father);
         div.innerHTML = `${throttling.numUserMessagesInConversation} / ${throttling.maxNumUserMessagesInConversation}`;
@@ -153,9 +242,9 @@ function porserRichTextBlocks(inlines, father) {
  */
 function porserSourceAttributions(sourceAttributions, father) {
     let html = '';
-    for(let i=0;i<sourceAttributions.length;i++){
+    for (let i = 0; i < sourceAttributions.length; i++) {
         let sourceAttribution = sourceAttributions[i];
-        html = html+`<a target="_blank" href="${sourceAttribution.seeMoreUrl}">${sourceAttribution.providerDisplayName}</a>`;
+        html = html + `<a target="_blank" href="${sourceAttribution.seeMoreUrl}">${sourceAttribution.providerDisplayName}</a>`;
     }
     father.innerHTML = html;
 }
@@ -165,10 +254,10 @@ function porserSourceAttributions(sourceAttributions, father) {
 function porserSuggestedResponses(suggestedResponses) {
     var searchSuggestions = document.getElementById('SearchSuggestions');
     searchSuggestions.innerHTML = '';
-    for(let i=0;i<suggestedResponses.length;i++){
+    for (let i = 0; i < suggestedResponses.length; i++) {
         let a = document.createElement('a');
         a.innerHTML = suggestedResponses[i].text;
-        a.onclick = (even)=>{
+        a.onclick = (even) => {
             send(even.target.innerHTML);
         }
         searchSuggestions.appendChild(a);

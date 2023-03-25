@@ -278,6 +278,23 @@
 	flex: none;
 }
 
+/* 画图部分 */
+.GenerateContentQuery{
+	background-color: #ffffff;
+    border-radius: 1em;
+    max-width: 85%;
+    margin-bottom: 3em;
+    margin-top: -1em;
+    text-align: center;
+    font-size: 1em;
+    padding: 1em;
+    overflow: hidden;
+    display: inline-table;
+}
+.GenerateContentQuery > img {
+    max-width: 24%;
+    margin: 0.5%;
+}
 
 
 

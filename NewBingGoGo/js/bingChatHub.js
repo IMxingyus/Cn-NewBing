@@ -1,5 +1,5 @@
 var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+\\S*$');
-function timeString(){
+function timeString() {
 	var d = new Date();
 	var year = d.getFullYear();
 	var month = (d.getMonth() + 1).toString().padStart(2, "0");
@@ -13,50 +13,84 @@ function timeString(){
 }
 
 function getUuidNojian() {
-  return URL.createObjectURL(new Blob()).split('/')[3].replace(/-/g,'');
+	return URL.createObjectURL(new Blob()).split('/')[3].replace(/-/g, '');
 }
 
 function getUuid() {
-  return URL.createObjectURL(new Blob()).split('/')[3];
+	return URL.createObjectURL(new Blob()).split('/')[3];
 }
 
 //聊天选项
 let chatTypes = {
 	//更有创造力选项
-	create:[
+	create: [
 		"nlu_direct_response_filter",
 		"deepleo",
 		"disable_emoji_spoken_text",
 		"responsible_ai_policy_235",
 		"enablemm",
 		"h3imaginative",
-		"hubcancel",
-		"dv3sugg"
+		"h3toppfp3",
+		"forcerep",
+		"dv3sugg",
+		"gencontentv3",
+		"gencontentv3"
 	],
 	//balance 平衡模式选项
-	balance:[
+	balance: [
 		"nlu_direct_response_filter",
 		"deepleo",
 		"disable_emoji_spoken_text",
 		"responsible_ai_policy_235",
 		"enablemm",
-		"harmonyv3",
-		"hubcancel",
+		"galileo",
+		"h3toppfp3",
+		"forcerep",
 		"dv3sugg",
-		"localansgnd"
+		"glprompt"
 	],
 	//精准选项
-	accurate:[
+	accurate: [
 		"nlu_direct_response_filter",
 		"deepleo",
 		"disable_emoji_spoken_text",
 		"responsible_ai_policy_235",
 		"enablemm",
 		"h3precise",
-		"hubcancel",
+		"h3toppfp3",
+		"forcerep",
 		"dv3sugg"
 	]
 }
+
+//接收消息类型
+let allowedMessageTypes = [
+	"Chat",
+	"InternalSearchQuery",
+	"InternalSearchResult",
+	"Disengaged",
+	"InternalLoaderMessage",
+	"RenderCardRequest",
+	"AdsQuery",
+	"SemanticSerp",
+	"GenerateContentQuery",
+	"SearchQuery"
+]
+
+//切片id，也不知道是啥意思，反正官网的更新了
+let sliceIds = [
+	"321bic62up",
+	"321bic62",
+	"styleqnatg",
+	"creatorv2c",
+	"sydpayajax",
+	"sydperfinput",
+	"toneexp",
+	"321toppfp3",
+	"323frep",
+	"303hubcancls0",
+	"321jobsgndv0"
+]
 
 class SendMessageManager {
 	//(会话id，客户端id，签名id，是否是开始)
@@ -71,7 +105,7 @@ class SendMessageManager {
 	}
 
 	//chatTypes中的一种
-	setChatType(chatType){
+	setChatType(chatType) {
 		this.optionsSets = chatType;
 	}
 
@@ -123,17 +157,9 @@ class SendMessageManager {
 			"arguments": [{
 				"source": "cib",
 				"optionsSets": this.optionsSets,
-				"allowedMessageTypes": ["Chat", "InternalSearchQuery", "InternalSearchResult",
-					"Disengaged",
-					"InternalLoaderMessage", "RenderCardRequest", "AdsQuery", "SemanticSerp",
-					"GenerateContentQuery", "SearchQuery"
-				],
-				"sliceIds": ["styleqnatg", "scfraithct", "scraith70", "revdv3tf2", "sydpayajax",
-					"linkimgintf",
-					"sydperfinput", "308enbsd", "308sdcnt2", "308jbf2", "0310wlthrots0",
-					"302blcklists0",
-					"314glprompt", "303hubcancel"
-				],
+				"allowedMessageTypes": allowedMessageTypes,
+				"sliceIds": sliceIds,
+				"verbosity": "verbose",
 				"traceId": getUuidNojian(),
 				"isStartOfSession": (this.invocationId <= 1) ? true : false,
 				"message": {
@@ -141,26 +167,32 @@ class SendMessageManager {
 					"market": "zh-CN",
 					"region": "US",
 					"location": "lat:47.639557;long:-122.128159;re=1000m;",
-					"locationHints": [{
-						"Center": {
-							"Latitude": 30.480699493524973,
-							"Longitude": 114.39288153402381
+					"locationHints": [
+						{
+							"Center": {
+								"Latitude": 30.474109798833613,
+								"Longitude": 114.39626256171093
+							},
+							"RegionType": 2,
+							"SourceType": 11
 						},
-						"RegionType": 2,
-						"SourceType": 11
-					}, {
-						"country": "Singapore",
-						"state": "Central Singapore",
-						"city": "Singapore",
-						"timezoneoffset": 8,
-						"countryConfidence": 8,
-						"Center": {
-							"Latitude": 1.2894,
-							"Longitude": 103.85
-						},
-						"RegionType": 2,
-						"SourceType": 1
-					}],
+						{
+							"country": "United States",
+							"state": "California",
+							"city": "Los Angeles",
+							"zipcode": "90060",
+							"timezoneoffset": -8,
+							"dma": 803,
+							"countryConfidence": 8,
+							"cityConfidence": 5,
+							"Center": {
+								"Latitude": 33.9757,
+								"Longitude": -118.2564
+							},
+							"RegionType": 2,
+							"SourceType": 1
+						}
+					],
 					"timestamp": this.startTime,
 					"author": "user",
 					"inputMethod": "Keyboard",
@@ -202,14 +234,14 @@ class ReturnMessage {
 			//console.log('收到', mess.data);
 			let sss = mess.data.split('\u001e');
 			for (let i = 0; i < sss.length; i++) {
-				if(sss[i] == ''){
+				if (sss[i] == '') {
 					continue;
 				}
 				for (let j in this.onMessage) {
 					if ((typeof this.onMessage[j]) == 'function') {
-						try{
-							this.onMessage[j](JSON.parse(sss[i]),this);
-						}catch(e){
+						try {
+							this.onMessage[j](JSON.parse(sss[i]), this);
+						} catch (e) {
 							console.warn(e)
 						}
 					}
@@ -219,27 +251,27 @@ class ReturnMessage {
 		catWebSocket.onclose = (mess) => {
 			for (let i in this.onMessage) {
 				if ((typeof this.onMessage[i]) == 'function') {
-					try{
+					try {
 						this.onMessage[i]({
 							type: 'close',
-							mess : '连接关闭'
-						},this);
-					}catch(e){
+							mess: '连接关闭'
+						}, this);
+					} catch (e) {
 						console.warn(e)
 					}
 				}
 			}
 		}
-		catWebSocket.onerror =(mess)=>{
+		catWebSocket.onerror = (mess) => {
 			console.log(mess);
 			for (let i in this.onMessage) {
 				if ((typeof this.onMessage[i]) == 'function') {
-					try{
+					try {
 						this.onMessage[i]({
 							type: 'error',
-							mess :mess
-						},this);
-					}catch(e){
+							mess: mess
+						}, this);
+					} catch (e) {
 						console.warn(e)
 					}
 				}
@@ -249,7 +281,7 @@ class ReturnMessage {
 	/*
 	获取消息WebSocket
 	*/
-	getCatWebSocket(){
+	getCatWebSocket() {
 		return this.catWebSocket;
 	}
 	/**
@@ -264,11 +296,11 @@ class ReturnMessage {
 class Chat {
 	//theChatType chatTypes变量中的其中一个
 	//(string,string,string,int)
-	constructor(magicUrl,chatWithMagic,charID, clientId, conversationSignature,theChatType) {
+	constructor(magicUrl, chatWithMagic, charID, clientId, conversationSignature, theChatType) {
 		this.magicUrl = magicUrl;
 		this.chatWithMagic = chatWithMagic;
 		this.sendMessageManager = new SendMessageManager(charID, clientId, conversationSignature);
-		if(theChatType){
+		if (theChatType) {
 			this.sendMessageManager.setChatType(theChatType);
 		}
 	}
@@ -283,11 +315,11 @@ class Chat {
 	 * 参数 消息string,当收到消息的函数,当关闭时函数
 	 */
 	//(string,function:可以不传)
-	sendMessage(message,onMessage) {
+	sendMessage(message, onMessage) {
 		try {
 			let restsrstUrl = 'wss://sydney.bing.com/sydney/ChatHub';
-			if(this.chatWithMagic){
-				restsrstUrl = URLTrue(this.magicUrl.replace('http','ws'),"ChatHub");
+			if (this.chatWithMagic) {
+				restsrstUrl = URLTrue(this.magicUrl.replace('http', 'ws'), "ChatHub");
 			}
 			let chatWebSocket = new WebSocket(restsrstUrl);
 			chatWebSocket.onopen = () => {
@@ -297,8 +329,8 @@ class Chat {
 			return {
 				ok: true,
 				message: 'ok',
-				obj: new ReturnMessage(chatWebSocket,onMessage),
-				chatWithMagic:this.chatWithMagic
+				obj: new ReturnMessage(chatWebSocket, onMessage),
+				chatWithMagic: this.chatWithMagic
 			};
 		} catch (e) {
 			console.warn(e)
@@ -319,24 +351,24 @@ async function setMagicUrl(url) {
 async function getMagicUrl() {
 	return (await chrome.storage.local.get('GoGoUrl')).GoGoUrl;
 }
-async function getChatHubWithMagic(){
+async function getChatHubWithMagic() {
 	return (await chrome.storage.local.get('ChatHubWithMagic')).ChatHubWithMagic;
 }
 
 /***
  * 补齐url
  */
-function URLTrue(magicUrl,thiePath){
+function URLTrue(magicUrl, thiePath) {
 	let url = magicUrl;
-		if(!url.endsWith('/')){
-			url = url+'/';
-		}
+	if (!url.endsWith('/')) {
+		url = url + '/';
+	}
 	url = url + thiePath;
 	return url;
 }
 
 //获取newbing权限
-async function getPower(){
+async function getPower() {
 	//设置cookies到魔法链接
 	let magicUrl = await getMagicUrl();
 	if (!magicUrl) {
@@ -345,7 +377,7 @@ async function getPower(){
 			message: "需要设置魔法链接才能获取权限哦！"
 		};
 	}
-	if(!expUrl.test(magicUrl)){
+	if (!expUrl.test(magicUrl)) {
 		return {
 			ok: false,
 			message: "魔法链接不正确！请修改魔法链接。"
@@ -353,8 +385,8 @@ async function getPower(){
 	}
 	await copyCookies(magicUrl);
 
-	try{
-		await fetch(URLTrue(magicUrl,'bingcopilotwaitlist'));
+	try {
+		await fetch(URLTrue(magicUrl, 'bingcopilotwaitlist'));
 		return {
 			ok: true,
 			message: "ok"
@@ -369,7 +401,7 @@ async function getPower(){
 }
 
 
-async function copyCookies(magicUrl){
+async function copyCookies(magicUrl) {
 	let cookiesjson = [];
 	let fr = [".bing.com"];
 	for (let i = 0; i < fr.length; i++) {
@@ -416,16 +448,16 @@ async function createChat(theChatType) {
 			message: "需要设置魔法链接才能聊天哦！"
 		};
 	}
-	if(!expUrl.test(magicUrl)){
+	if (!expUrl.test(magicUrl)) {
 		return {
 			ok: false,
 			message: "魔法链接不正确！请修改魔法链接。"
 		};
 	}
 	await copyCookies(magicUrl);
-	
+
 	try {
-		let res = await fetch(URLTrue(magicUrl,'Create'));
+		let res = await fetch(URLTrue(magicUrl, 'Create'));
 		let resjson = await res.json();
 		if (!resjson.result) {
 			console.warn(resjson);
@@ -437,24 +469,24 @@ async function createChat(theChatType) {
 		if (resjson.result.value != 'Success') {
 			let type = resjson.result.value;
 			let mess = resjson.result.message;
-			if(resjson.result.value=='UnauthorizedRequest'){
+			if (resjson.result.value == 'UnauthorizedRequest') {
 				type = 'NoLogin'
 				mess = '首先你需要在bing登录微软账号！请前往 https://cn.bing.com/ 登录微软账号。';
-			}else if(resjson.result.value=='Forbidden'){
+			} else if (resjson.result.value == 'Forbidden') {
 				type = 'NoPower'
 				mess = '你还没有获得NewBing的使用权限';
 			}
 			console.warn(resjson);
 			return {
 				ok: false,
-				type:type,
+				type: type,
 				message: mess
 			};
 		}
 		return {
 			ok: true,
 			message: 'ok',
-			obj: new Chat(magicUrl,chatWithMagic,resjson.conversationId, resjson.clientId, resjson.conversationSignature,theChatType)
+			obj: new Chat(magicUrl, chatWithMagic, resjson.conversationId, resjson.clientId, resjson.conversationSignature, theChatType)
 		};
 	} catch (e) {
 		console.warn(e);
