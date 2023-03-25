@@ -10,7 +10,7 @@ var loadcookiesButtun = document.querySelector('input#loadcookies');
 var speak = document.querySelector('p#speak');
 var tallSelect = document.querySelector('select#tallSelect');
 
-var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+');
+var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+\\S*$');
 var magicUrl;
 
 function loaded() {

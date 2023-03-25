@@ -1,4 +1,4 @@
-var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+');
+var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+\\S*$');
 function timeString(){
 	var d = new Date();
 	var year = d.getFullYear();

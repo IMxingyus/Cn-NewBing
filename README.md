@@ -39,11 +39,23 @@ https://mybing.xn--xyza.top/
 
 ## 魔法链接
 我的魔法链接是下面这个，但是强烈不推荐大家用我的。建议自己创建最好的，或者用朋友的（如果你们都用我的，小心把你们的Cookit全部存起来干好事awa）
-~~~ yaml
-https://mybing.xn--xyza.top/           #使用 Cloudflare Worker 创建的
-https://mybing1.xn--xyza.top/          #使用 Railway 创建的
-~~~
+
+---
 [创建自己的魔法链接.md](./docs/%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E9%AD%94%E6%B3%95%E9%93%BE%E6%8E%A5.md)
+
+---
+使用 Cloudflare Worker 创建的
+~~~
+https://mybing.xn--xyza.top/
+~~~
+
+---
+使用 Railway 创建的
+~~~
+https://mybing1.xn--xyza.top/
+~~~
+
+
 
 ## 聊天方式
 - 正常聊天 -> 使用魔法创建聊天后不使用魔法了，这种方式速度快，推荐。
