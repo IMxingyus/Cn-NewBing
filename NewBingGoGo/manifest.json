@@ -1,7 +1,7 @@
 {
-	"name": "CnNewBing",
-	"description": "简单的使用NewBing",
-	"version": "1.0",
+	"name": "CN NewBing",
+	"description": "可以免去复杂手段使用newbing聊天的插件"",
+	"version": "0.9.5",
 	"manifest_version": 3,
 	"permissions": [
 		"storage",
