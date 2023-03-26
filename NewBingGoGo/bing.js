@@ -114,7 +114,7 @@ function isSpeakingStart(chatWithMagic){
 
 function isSpeakingFinish(){
 	isSpeaking = false;
-	send_button.value = '发送';
+	send_button.value = '✓';
 }
 function send(text){
 	if(isSpeaking){
@@ -165,7 +165,7 @@ send_button.onclick = () => {
 	let text = input_text.value;
 	input_text.value = '';
 	if (!text) {
-		alert('什么都没有输入呀！');
+		alert('内容为空');
 		return;
 	}
 	send(text);
