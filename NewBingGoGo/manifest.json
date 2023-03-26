@@ -1,6 +1,6 @@
 {
 	"name": "CN NewBing",
-	"description": "可以免去复杂手段使用newbing聊天的插件"",
+	"description": "免去复杂手段使用Bing AI",
 	"version": "0.9.5",
 	"manifest_version": 3,
 	"permissions": [
