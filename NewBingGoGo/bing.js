@@ -10,7 +10,7 @@ reSetSearchSuggestions();
 function updateType2(json){
 	if(json.item.result.value=='Throttled'){
 		addError(json.item.result.message);
-		addError('24消息请求数达到了限制！');
+		addError('24 消息请求数达到了限制！');
 	}else{
 		console.log(JSON.stringify(json));
 	}
@@ -41,20 +41,20 @@ function addError(message) {
 function addNoPower(){
 	let go = document.createElement('div');
 	go.classList.add('NoPower');
-	go.innerHTML = '点击尝试申请加入候补名单获取NewBing聊天权限';
+	go.innerHTML = '加入候补名单;
 	chat.appendChild(go);
 	go.onclick = ()=>{
 		if(go.geting){
 			return;
 		}
 		go.geting = true;
-		go.innerHTML = '正在请求申请加入候补名单..';
+		go.innerHTML = '正在申请加入候补名单...';
 		getPower().then((rett)=>{
 			if(rett.ok==true){
 				go.innerHTML = '请求成功！请刷新页面重试，如果无权限使用请等待几天后重试。'
 				return;
 			}
-			go.innerHTML = '发生错误：'+rett.message;
+			go.innerHTML = '错误：'+rett.message;
 		});
 	}
 }
@@ -65,12 +65,12 @@ function onMessage(json, returnMessage) {
 	if(json.type == "close"){
 		isSpeakingFinish();
 		if(!onMessageIsOKClose){
-			addError("聊天异常中断了！可能是网络问题。");
+			addError("聊天中断 可能是网络问题");
 		}
 		return;
 	}
 	if(json.type == 'error'){
-		addError("连接发生错误："+json.mess);
+		addError("连接错误："+json.mess);
 		return;
 	}
 	onMessageIsOKClose = false
@@ -98,16 +98,16 @@ var isSpeaking = false;
 
 function isAskingToMagic(){
 	isSpeaking = true;
-	send_button.value = '正在施法.';
+	send_button.value = '发送中.';
 	searchSuggestions.innerHTML = '';
 }
 
 function isSpeakingStart(chatWithMagic){
 	isSpeaking = true;
 	if(chatWithMagic){
-		send_button.value = '魔法读心中.';
+		send_button.value = '发送中.';
 	}else{
-		send_button.value = 'bing回应中.';
+		send_button.value = '回应中.';
 	}
 	searchSuggestions.innerHTML = '';
 }
