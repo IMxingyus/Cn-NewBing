@@ -1,4 +1,12 @@
-# NewBingGoGo : 简单开始和NewBing聊天
+# CnNewBing : 简单的开始和NewBing聊天
+
+*Fork自 [jja8/NewBingGoGo](https://gitee.com/jja8/NewBingGoGo "jja8/NewBingGoGo")  ，并且做了些修改*  
+*~~虽然现在还没做好,就当它是一个镜像吧（反向镜像）~~*
+
+
+``````markdown
+# 以下是原作者写的，以后改
+
 
 ![和newbing聊天的图片](./docs/img/1.png)
 ![和newbing聊天的图片](./docs/img/1.1.png)
@@ -66,5 +74,5 @@ https://mybing1.xn--xyza.top/
 我现在大一，上学期学的html+css正好用上了，js这学期才开课，现在才学了一半，技术是真的不行，勉勉强强写出来了。如果觉得界面太丑还请见谅，漂亮的真的写不出来QAQ。
 
 关于封号问题，这个是不存在的。只存在请求次数过多被限制的问题，通常第二天就好了。虽然不存在封号问题，但是为了我自己放心，调用api的时候还是严格按照官网上的请求格式调用的，不会有特征问题，放心用就是了。
-
+```
 
