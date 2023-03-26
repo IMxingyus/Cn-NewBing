@@ -1,4 +1,4 @@
-# CnNewBing : 简单的开始和NewBing聊天
+# Cn-NewBing : 免去复杂手段使用Bing AI的插件
 
 *Fork自 [jja8/NewBingGoGo](https://gitee.com/jja8/NewBingGoGo "jja8/NewBingGoGo")  ，并且做了些修改*  
 *~~虽然现在还没做好,就当它是一个镜像吧（反向镜像）~~*
