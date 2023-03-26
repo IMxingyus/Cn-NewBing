@@ -1,6 +1,6 @@
 {
-	"name": "NewBingGoGo",
-	"description": "newbing的简单聊天插件",
+	"name": "CnNewBing",
+	"description": "简单的使用NewBing",
 	"version": "1.0",
 	"manifest_version": 3,
 	"permissions": [
