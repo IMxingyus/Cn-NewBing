@@ -14,7 +14,7 @@ var expUrl = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+\\S*$');
 var magicUrl;
 
 function loaded() {
-	//魔法链接输入框更新事件
+	//代理链接输入框更新事件
 	url_input.onchange = function(even) {
 		let url = url_input.value;
 		magicUrl = url;
@@ -44,14 +44,14 @@ async function getChatHubWithMagic(){
 
 function speakString() {
 	if (!magicUrl) {
-		speak.innerHTML = '我没有角角,需要魔法链接才能帮你哦。';
+		speak.innerHTML = '填写代理链接以解锁完整功能';
 		return;
 	}
 	if (!expUrl.test(magicUrl)) {
-		speak.innerHTML = '魔法链接似乎不太对。';
+		speak.innerHTML = '代理链接似乎不太对';
 		return;
 	}
-	speak.innerHTML = '魔法启动！';
+	speak.innerHTML = '代理可用！';
 }
 
 getUrl().then((v) => {
