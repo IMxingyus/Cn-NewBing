@@ -41,7 +41,7 @@ function addError(message) {
 function addNoPower(){
 	let go = document.createElement('div');
 	go.classList.add('NoPower');
-	go.innerHTML = '加入候补名单;
+	go.innerHTML = '加入候补名单';
 	chat.appendChild(go);
 	go.onclick = ()=>{
 		if(go.geting){
