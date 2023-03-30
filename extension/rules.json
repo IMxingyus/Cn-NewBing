@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "requestHeaders": [
+                {
+                    "header": "sec-fetch-site",
+                    "operation": "set",
+                    "value": "same-origin"
+                },
+                {
+                    "header": "Origin",
+                    "operation": "set",
+                    "value": "https://www.bing.com"
+                }
+            ]
+        },
+        "condition": {
+            "regexFilter": "wss?://sydney.bing.com/sydney/ChatHub",
+            "resourceTypes": [
+                "websocket"
+            ]
+        }
+    },
+    {
+        "id": 2,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "requestHeaders": [
+                {
+                    "header": "sec-fetch-site",
+                    "operation": "set",
+                    "value": "same-origin"
+                },
+                {
+                    "header": "referer",
+                    "operation": "set",
+                    "value": "https://www.bing.com/search?q=bingAI"
+                }
+            ]
+        },
+        "condition": {
+            "regexFilter": "https?://www.bing.com/images/create(.*)",
+            "resourceTypes": [
+                "sub_frame"
+            ]
+        }
+    }
+]
