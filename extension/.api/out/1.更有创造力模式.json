@@ -1,0 +1,127 @@
+{
+    "arguments": [
+        {
+            "source": "cib",
+            "optionsSets": [
+                "nlu_direct_response_filter",
+                "deepleo",
+                "disable_emoji_spoken_text",
+                "responsible_ai_policy_235",
+                "enablemm",
+                "h3imaginative",
+                "jbf101",
+                "cachewriteext",
+                "e2ecachewrite",
+                "nodlcpcwrite",
+                "dv3sugg",
+                "clgalileo",
+                "gencontentv3"
+            ],
+            "allowedMessageTypes": [
+                "Chat",
+                "InternalSearchQuery",
+                "InternalSearchResult",
+                "Disengaged",
+                "InternalLoaderMessage",
+                "RenderCardRequest",
+                "AdsQuery",
+                "SemanticSerp",
+                "GenerateContentQuery",
+                "SearchQuery"
+            ],
+            "sliceIds": [
+                "audseq",
+                "chk1cln",
+                "nofbkcf",
+                "nosharepre",
+                "fixsacodecf",
+                "405suggbs0",
+                "scctl",
+                "403jbf101",
+                "udstrclm8cmp",
+                "udstrclm8",
+                "329v6webtrunc",
+                "404e2ewrt"
+            ],
+            "verbosity": "verbose",
+            "traceId": "6431b17084a148809965f0f5e7c15247",
+            "isStartOfSession": true,
+            "message": {
+                "locale": "zh-CN",
+                "market": "zh-CN",
+                "region": "US",
+                "location": "lat:47.639557;long:-122.128159;re=1000m;",
+                "locationHints": [
+                    {
+                        "Center": {
+                            "Latitude": 30.47408892899758,
+                            "Longitude": 114.39626142462203
+                        },
+                        "RegionType": 2,
+                        "SourceType": 11
+                    },
+                    {
+                        "country": "Japan",
+                        "state": "Tokyo",
+                        "city": "Chiyoda-Ku",
+                        "zipcode": "102-0074",
+                        "timezoneoffset": 9,
+                        "countryConfidence": 9,
+                        "cityConfidence": 5,
+                        "Center": {
+                            "Latitude": 35.6918,
+                            "Longitude": 139.7504
+                        },
+                        "RegionType": 2,
+                        "SourceType": 1
+                    }
+                ],
+                "timestamp": "2023-04-09T02:24:49+08:00",
+                "author": "user",
+                "inputMethod": "Keyboard",
+                "text": "你好",
+                "messageType": "Chat"
+            },
+            "conversationSignature": "Mgy5on12mqnBDpqrFh391FlSK3Ei02UPB5I9T7AcWzc=",
+            "participant": {
+                "id": "844428653138895"
+            },
+            "conversationId": "51D|BingProd|64AFEEF9E0890AB417669BC84E7BF9747EEC7C1E6FD75BEB9AEC6FBF72E13BBA",
+            "previousMessages": [
+                {
+                    "text": "让我们发挥创意吧！你是否在考虑某个主题，还是即兴发挥？",
+                    "author": "bot",
+                    "adaptiveCards": [],
+                    "suggestedResponses": [
+                        {
+                            "text": "我可以为好友做些什么？",
+                            "contentOrigin": "DeepLeo",
+                            "messageType": "Suggestion",
+                            "messageId": "c542fdf8-b837-f106-39ab-54cc188745bb",
+                            "offense": "Unknown"
+                        },
+                        {
+                            "text": "给雷雨写一封情书",
+                            "contentOrigin": "DeepLeo",
+                            "messageType": "Suggestion",
+                            "messageId": "5b69b148-aa4f-54b4-896c-f941d0dd8300",
+                            "offense": "Unknown"
+                        },
+                        {
+                            "text": "告诉我的星座",
+                            "contentOrigin": "DeepLeo",
+                            "messageType": "Suggestion",
+                            "messageId": "2cc80f5f-7acc-92c5-0fe6-bdcf9bb9fc71",
+                            "offense": "Unknown"
+                        }
+                    ],
+                    "messageId": "cdb3a516-b8b5-4cff-4391-5c69917f661a",
+                    "messageType": "Chat"
+                }
+            ]
+        }
+    ],
+    "invocationId": "3",
+    "target": "chat",
+    "type": 4
+}

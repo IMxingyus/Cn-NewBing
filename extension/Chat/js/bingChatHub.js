@@ -30,12 +30,13 @@ let chatTypes = {
 		"responsible_ai_policy_235",
 		"enablemm",
 		"h3imaginative",
+		"jbf101",
+		"cachewriteext",
+		"e2ecachewrite",
+		"nodlcpcwrite",
+		"dv3sugg",
 		"clgalileo",
-		"gencontentv3",
-		"telmet",
-		"jbfv2",
-		"c2b47e4f",
-		"dv3sugg"
+		"gencontentv3"
 	],
 	//balance 平衡模式选项
 	balance: [
@@ -45,10 +46,13 @@ let chatTypes = {
 		"responsible_ai_policy_235",
 		"enablemm",
 		"galileo",
-		"telmet",
-		"jbfv2",
-		"c2b47e4f",
-		"dv3sugg"
+		"jbf101",
+		"cachewriteext",
+		"e2ecachewrite",
+		"nodlcpcwrite",
+		"dv3sugg",
+		"dlwebtrunc",
+		"glpromptv6"
 	],
 	//精准选项
 	accurate: [
@@ -58,11 +62,12 @@ let chatTypes = {
 		"responsible_ai_policy_235",
 		"enablemm",
 		"h3precise",
-		"telmet",
-		"jbfv2",
-		"c2b47e4f",
-		"dv3sugg",
-		"clgalileo"
+		"clgalileo",
+		"jbf101",
+		"cachewriteext",
+		"e2ecachewrite",
+		"nodlcpcwrite",
+		"dv3sugg"
 	]
 }
 
@@ -82,30 +87,30 @@ let allowedMessageTypes = [
 
 //切片id，也不知道是啥意思，反正官网的更新了
 let sliceIds = [
-	"semserpsup3",
-	"styleqnatg",
-	"lgintsuppcf",
-	"sydpayajax",
-	"toneexp",
-	"327telmet",
-	"325contents0",
-	"324jbfv2",
-	"303hubcancls0",
-	"321jobsgndv0",
-	"328throt",
-	"328postclss0"
+	"audseq",
+	"chk1cln",
+	"nofbkcf",
+	"nosharepre",
+	"fixsacodecf",
+	"405suggbs0",
+	"scctl",
+	"403jbf101",
+	"udstrclm8cmp",
+	"udstrclm8",
+	"329v6webtrunc",
+	"404e2ewrt"
 ]
 
 class SendMessageManager {
 	//(会话id，客户端id，签名id，是否是开始)
 	//(string,string,string,boolena)
-	constructor(conversationId, clientId, conversationSignature) {
+	constructor(conversationId, clientId, conversationSignature,invocationId) {
 		this.startTime = timeString();
-		this.invocationId = 1;
+		this.invocationId = invocationId==undefined?1:invocationId;
 		this.conversationId = conversationId;
 		this.clientId = clientId;
 		this.conversationSignature = conversationSignature;
-		this.optionsSets = chatTypes.balance;
+		this.optionsSets = 'balance';
 	}
 
 	//chatTypes中的一种
@@ -130,6 +135,11 @@ class SendMessageManager {
 	//获取用于发送的聊天数据
 	//(WebSocket,sreing)
 	sendChatMessage(chatWebSocket, chat) {
+		let optionsSets = chatTypes[this.optionsSets];
+		if(!optionsSets){
+			optionsSets = chatTypes.balance;
+			console.warn("不存在的ChatType",this.optionsSets);
+		}
 		let pos = getStartProposes();
 		let previousMessages = [{
 			"text": getStartMessage(),
@@ -160,7 +170,7 @@ class SendMessageManager {
 		let json = {
 			"arguments": [{
 				"source": "cib",
-				"optionsSets": this.optionsSets,
+				"optionsSets": optionsSets,
 				"allowedMessageTypes": allowedMessageTypes,
 				"sliceIds": sliceIds,
 				"verbosity": "verbose",
@@ -299,11 +309,10 @@ class ReturnMessage {
 //处理聊天的类
 class Chat {
 	//theChatType chatTypes变量中的其中一个
-	//(string,string,string,int)
-	constructor(magicUrl, chatWithMagic, charID, clientId, conversationSignature, theChatType) {
-		this.magicUrl = magicUrl;
-		this.chatWithMagic = chatWithMagic;
-		this.sendMessageManager = new SendMessageManager(charID, clientId, conversationSignature);
+	//invocationId 可以不传
+	//(string,ture|false|'repeat',string,string,string,theChatType,int|undefined)
+	constructor(charID, clientId, conversationSignature, theChatType,invocationId) {
+		this.sendMessageManager = new SendMessageManager(charID, clientId, conversationSignature,invocationId);
 		if (theChatType) {
 			this.sendMessageManager.setChatType(theChatType);
 		}
@@ -319,11 +328,19 @@ class Chat {
 	 * 参数 消息string,当收到消息的函数,当关闭时函数
 	 */
 	//(string,function:可以不传)
-	sendMessage(message, onMessage) {
+	async sendMessage(message, onMessage) {
 		try {
 			let restsrstUrl = 'wss://sydney.bing.com/sydney/ChatHub';
-			if (this.chatWithMagic) {
-				restsrstUrl = URLTrue(this.magicUrl.replace('http', 'ws'), "ChatHub");
+			let chatWithMagic = await getChatHubWithMagic();
+			if (chatWithMagic) {
+				let magicUrl = await getMagicUrl();
+				if(!expUrl.test(magicUrl)){
+					return {
+						ok: false,
+						message: "代理链接不正确！请修改代理链接。"
+					};
+				}
+				restsrstUrl = URLTrue(magicUrl.replace('http', 'ws'), "sydney/ChatHub");
 			}
 			let chatWebSocket = new WebSocket(restsrstUrl);
 			chatWebSocket.onopen = () => {
@@ -334,7 +351,7 @@ class Chat {
 				ok: true,
 				message: 'ok',
 				obj: new ReturnMessage(chatWebSocket, onMessage),
-				chatWithMagic: this.chatWithMagic
+				chatWithMagic: chatWithMagic
 			};
 		} catch (e) {
 			console.warn(e)
@@ -344,19 +361,6 @@ class Chat {
 			};
 		}
 	}
-}
-
-async function setMagicUrl(url) {
-	return await chrome.storage.local.set({
-		GoGoUrl: url
-	});
-}
-
-async function getMagicUrl() {
-	return (await chrome.storage.local.get('GoGoUrl')).GoGoUrl;
-}
-async function getChatHubWithMagic() {
-	return (await chrome.storage.local.get('ChatHubWithMagic')).ChatHubWithMagic;
 }
 
 /***
@@ -373,24 +377,24 @@ function URLTrue(magicUrl, thiePath) {
 
 //获取newbing权限
 async function getPower() {
-	//设置cookies到魔法链接
+	//设置cookies到代理链接
 	let magicUrl = await getMagicUrl();
 	if (!magicUrl) {
 		return {
 			ok: false,
-			message: "需要设置魔法链接才能获取权限哦！"
+			message: "需要设置代理链接才能获取权限哦！"
 		};
 	}
 	if (!expUrl.test(magicUrl)) {
 		return {
 			ok: false,
-			message: "魔法链接不正确！请修改魔法链接。"
+			message: "代理链接不正确！请修改代理链接。"
 		};
 	}
 	await copyCookies(magicUrl);
 
 	try {
-		await fetch(URLTrue(magicUrl, 'bingcopilotwaitlist'));
+		await fetch(URLTrue(magicUrl, 'msrewards/api/v1/enroll?publ=BINGIP&crea=MY00IA&pn=bingcopilotwaitlist&partnerId=BingRewards&pred=true&wtc=MktPage_MY0291'));
 		return {
 			ok: true,
 			message: "ok"
@@ -399,7 +403,7 @@ async function getPower() {
 		console.warn(e);
 		return {
 			ok: false,
-			message: "发生错误,可能是魔法链接无法链接:" + e.message
+			message: "发生错误,可能是代理链接无法链接:" + e.message
 		};
 	}
 }
@@ -443,26 +447,31 @@ async function copyCookies(magicUrl) {
  }
  */
 async function createChat(theChatType) {
-	//设置cookies到魔法链接
-	let chatWithMagic = await getChatHubWithMagic();
+	//设置cookies到代理链接
 	let magicUrl = await getMagicUrl();
 	if (!magicUrl) {
 		return {
 			ok: false,
-			message: "需要设置魔法链接才能聊天哦！"
+			message: "需要设置代理链接才能聊天哦！"
 		};
 	}
 	if (!expUrl.test(magicUrl)) {
 		return {
 			ok: false,
-			message: "魔法链接不正确！请修改魔法链接。"
+			message: "代理链接不正确！请修改代理链接。"
 		};
-	}
-	await copyCookies(magicUrl);
-
+	}	
 	try {
-		let res = await fetch(URLTrue(magicUrl, 'Create'));
-		let resjson = await res.json();
+		await copyCookies(magicUrl);
+		let res = await fetch(URLTrue(magicUrl, 'turing/conversation/create'));
+		let rText = await res.text();
+		if(rText.length<1){
+			return {
+				ok: false,
+				message: "代理似乎不能正常工作，试试换一个代理链接？"
+			};
+		}
+		let resjson = JSON.parse(rText);
 		if (!resjson.result) {
 			console.warn(resjson);
 			return {
@@ -490,13 +499,13 @@ async function createChat(theChatType) {
 		return {
 			ok: true,
 			message: 'ok',
-			obj: new Chat(magicUrl, chatWithMagic, resjson.conversationId, resjson.clientId, resjson.conversationSignature, theChatType)
+			obj: new Chat(resjson.conversationId, resjson.clientId, resjson.conversationSignature, theChatType)
 		};
 	} catch (e) {
 		console.warn(e);
 		return {
 			ok: false,
-			message: "发生错误,可能是魔法链接无法链接:" + e.message
+			message: "发生错误,可能是代理链接无法链接:" + e.message
 		};
 	}
 

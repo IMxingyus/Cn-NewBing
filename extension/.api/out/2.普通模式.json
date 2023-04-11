@@ -1,0 +1,127 @@
+{
+    "arguments": [
+        {
+            "source": "cib",
+            "optionsSets": [
+                "nlu_direct_response_filter",
+                "deepleo",
+                "disable_emoji_spoken_text",
+                "responsible_ai_policy_235",
+                "enablemm",
+                "galileo",
+                "jbf101",
+                "cachewriteext",
+                "e2ecachewrite",
+                "nodlcpcwrite",
+                "dv3sugg",
+                "dlwebtrunc",
+                "glpromptv6"
+            ],
+            "allowedMessageTypes": [
+                "Chat",
+                "InternalSearchQuery",
+                "InternalSearchResult",
+                "Disengaged",
+                "InternalLoaderMessage",
+                "RenderCardRequest",
+                "AdsQuery",
+                "SemanticSerp",
+                "GenerateContentQuery",
+                "SearchQuery"
+            ],
+            "sliceIds": [
+                "audseq",
+                "chk1cln",
+                "nofbkcf",
+                "nosharepre",
+                "fixsacodecf",
+                "405suggbs0",
+                "scctl",
+                "403jbf101",
+                "udstrclm8cmp",
+                "udstrclm8",
+                "329v6webtrunc",
+                "404e2ewrt"
+            ],
+            "verbosity": "verbose",
+            "traceId": "6431b17084a148809965f0f5e7c15247",
+            "isStartOfSession": true,
+            "message": {
+                "locale": "zh-CN",
+                "market": "zh-CN",
+                "region": "US",
+                "location": "lat:47.639557;long:-122.128159;re=1000m;",
+                "locationHints": [
+                    {
+                        "Center": {
+                            "Latitude": 30.47408892899758,
+                            "Longitude": 114.39626142462203
+                        },
+                        "RegionType": 2,
+                        "SourceType": 11
+                    },
+                    {
+                        "country": "Japan",
+                        "state": "Tokyo",
+                        "city": "Chiyoda-Ku",
+                        "zipcode": "102-0074",
+                        "timezoneoffset": 9,
+                        "countryConfidence": 9,
+                        "cityConfidence": 5,
+                        "Center": {
+                            "Latitude": 35.6918,
+                            "Longitude": 139.7504
+                        },
+                        "RegionType": 2,
+                        "SourceType": 1
+                    }
+                ],
+                "timestamp": "2023-04-09T02:24:49+08:00",
+                "author": "user",
+                "inputMethod": "Keyboard",
+                "text": "你好",
+                "messageType": "Chat"
+            },
+            "conversationSignature": "ro4XGbXemkoYeQtRqGMhZYEa7JGM4JPRKnhltbAr5NU=",
+            "participant": {
+                "id": "844428653138895"
+            },
+            "conversationId": "51D|BingProd|9C97E62D08E9EE100BFEC34B266BA81D08C21B05949D8426B22E95376F617B40",
+            "previousMessages": [
+                {
+                    "text": "很好，我还可以帮助你发现新事物并找到答案。我们首先应该做什么？",
+                    "author": "bot",
+                    "adaptiveCards": [],
+                    "suggestedResponses": [
+                        {
+                            "text": "我需要一些建议",
+                            "contentOrigin": "DeepLeo",
+                            "messageType": "Suggestion",
+                            "messageId": "e8e78bcf-c724-449d-2f8c-c0299d56a11a",
+                            "offense": "Unknown"
+                        },
+                        {
+                            "text": "附近哪里可以看到星星？",
+                            "contentOrigin": "DeepLeo",
+                            "messageType": "Suggestion",
+                            "messageId": "4688097f-119a-70aa-69cb-e7dd05b480fc",
+                            "offense": "Unknown"
+                        },
+                        {
+                            "text": "蜜蜂如何酿蜜？",
+                            "contentOrigin": "DeepLeo",
+                            "messageType": "Suggestion",
+                            "messageId": "abb40cd6-6ae5-5543-12a2-3274b24ff9fb",
+                            "offense": "Unknown"
+                        }
+                    ],
+                    "messageId": "1d3be5f3-7497-0e44-4659-13199334e8ac",
+                    "messageType": "Chat"
+                }
+            ]
+        }
+    ],
+    "invocationId": "2",
+    "target": "chat",
+    "type": 4
+}

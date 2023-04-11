@@ -30,8 +30,66 @@
 }
 
 #head-li-div {
-    margin-right: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
+#head-li-div>li{
+    list-style: none;
+    margin-right: 1rem;
+    font-size: 1rem;
+}
+#ChatRecordsNameInputDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    background-color: white;
+    border-radius: 1rem;
+    /* border: 0.1rem solid #000000ab; */
+    padding: 0 0.2rem;
+    width:10rem;
+    transition: padding 0.5s,width 0.5s;
+}
+#ChatRecordsServer.noshow,
+#ChatRecordsNameInputDiv.noshow{
+    padding: 0;
+    width: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.ChatRecordsNameli{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+#ChatRecordsNameInput{
+    background-color: #ffffff00;
+    border: 0;
+    outline: none;
+    flex: 1;
+    width: 100%;
+}
+#ChatRecordsNameNo{
+    color: red;
+    cursor: pointer;
+}
+#ChatRecordsServer{
+    white-space: nowrap;
+    width:2rem;
+    transition: padding 0.5s,width 0.5s;
+    cursor: pointer;
+}
+#showChatRecords{
+    cursor: pointer;
+}
+#showChatRecords:hover,
+#ChatRecordsServer:hover{
+    color: #ff8300;
+}
+
 
 
 /* 背景*/
@@ -44,19 +102,21 @@
     height: 100%;
     z-index: -1;
     background: repeating-linear-gradient(359deg, rgb(182 196 255) 0%, rgb(207 225 255 / 78%) 100%);
-    transition: filter 1s;
 }
-
-#background.a {
+#background.a,
+body:has(#background.a) .ThemeColors{
+    transition: filter 1s;
     filter: hue-rotate(10deg);
 }
-
-#background.b {
-    filter: hue-rotate(-5deg);
+#background.b,
+body:has(#background.b) .ThemeColors{
+    transition: filter 1s;
+    filter: hue-rotate(-15deg);
 }
-
-#background.c {
-    filter: hue-rotate(-20deg);
+#background.c,
+body:has(#background.c) .ThemeColors{
+    transition: filter 1s;
+    filter: hue-rotate(-40deg);
 }
 
 
@@ -117,12 +177,14 @@
 }
 
 
-#restart:hover {
+#restart:hover 
+{
     background-color: #ffffff;
     cursor: pointer;
 }
 
-#restart {
+#restart
+{
     border: 0;
     border-radius: 1.5rem;
     background-color: #ffffff9e;
@@ -147,11 +209,12 @@ body:has(.my) #restart {
     opacity: 1;
 }
 
+
 #send {
     border: 0;
     margin: 0 1rem 1rem 0;
     border-radius: 2rem;
-    background-color: #005fff38;
+    background-color: rgb(182 196 255);
     height: 1.8rem;
     font-size: 0.8rem;
     cursor: pointer;
@@ -191,6 +254,9 @@ body:has(.my) #restart {
 
 
 /* 页面部分 */
+body {
+    overflow-x: hidden;
+}
 
 #body-top {
     height: 20vh;
@@ -200,6 +266,44 @@ body:has(.my) #restart {
 #body-bottom {
     height: 15rem;
     width: 100%;
+}
+
+/**聊天记录部分*/
+#ChatRecordsListDivOut{
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 20rem;
+    height: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: stretch;
+    overflow: hidden;
+    transition: all 0.5s;
+}
+#ChatRecordsListDivOut.notShow{
+    width: 0;
+}
+#ChatRecordsListDiv{
+    margin-top: 4rem;
+    margin-bottom: 7rem;
+    width: 100%;
+    background-color: #ffffff33;
+    overflow-y: auto;
+}
+#ChatRecordsListDiv>div{
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.5rem;
+    background-color: #ffffff70;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+#ChatRecordsListDiv>div:hover{
+    background-color: #fffffff5;
+}
+#ChatRecordsListDiv>div>h3,
+#ChatRecordsListDiv>div>p{
+    margin: 0;
 }
 
 
@@ -259,14 +363,42 @@ body:has(.my) #restart {
 
 
 /* 聊天部分,在页面内 */
+@keyframes acceptMeaaage {
+    from {
+        margin-top: 1em;
+        margin-left: -4em;
+        opacity: 0;
+    }
+
+    to {}
+}
+
+@keyframes sendMeaaage {
+    from {
+        margin-top: 1em;
+        margin-right: -4em;
+        opacity: 0;
+    }
+
+    to {}
+}
+
 .bing,
-.my{
+.my {
     margin-bottom: 2rem;
 }
 
 .bing {
     display: grid;
     justify-items: start;
+}
+
+.bing>* {
+    animation: acceptMeaaage 0.5s;
+}
+
+.my>* {
+    animation: sendMeaaage 0.5s;
 }
 
 .my {
@@ -323,10 +455,10 @@ body:has(.my) #restart {
     margin-bottom: 1em;
 }
 
+
 .bing>.sourceAttributions>a {
     display: inline-block;
     background-color: #ffffff73;
-    ;
     border-radius: 1rem;
     padding: 0.5rem;
     text-overflow: ellipsis;
@@ -363,7 +495,7 @@ body:has(.my) #restart {
 }
 
 /*暂时不知道如何解析的渲染卡片请求*/
-.RenderCardRequest{
+.RenderCardRequest {
     border-radius: 1em;
     background-color: white;
     overflow: auto;
@@ -371,9 +503,10 @@ body:has(.my) #restart {
     width: 85vw;
     max-width: 1100px;
 }
-.RenderCardRequest > iframe{
+
+.RenderCardRequest>iframe {
     min-width: 768px;
-    width:100%;
+    width: 100%;
     height: 602px;
     border: 0;
 }
@@ -394,10 +527,19 @@ body:has(.my) #restart {
     display: inline-table;
 }
 
-.GenerateContentQuery>img {
+.GenerateContentQuery>a>img {
     max-width: 24%;
     margin: 0.5%;
+    transition: all 0.8s;
+    cursor: pointer;
 }
+
+.GenerateContentQuery>a>img:hover {
+    margin: 0.2% 0.8% 0.8% 0.2%;
+    box-shadow: #0000007a 2px 3px 5px 0px;
+    transition: all 0.3s;
+}
+
 
 
 /* 错误部分 */
@@ -432,25 +574,34 @@ div.markdown-body {
 
 
 /* 窄窗口 */
-@media screen and (max-width:550px){
+@media screen and (max-width:550px) {
+
     #tail-in:has(#input:focus-visible) #restart,
-    #tail-in:has(#input:hover) #restart {
+    #tail-in:has(#input:hover) #restart{
         width: 0;
         margin: 0;
         padding: 0;
         opacity: 0;
     }
-    .GenerateContentQuery>img {
+
+    .GenerateContentQuery>a>img {
         max-width: 49%;
         width: 49%;
     }
+
     #tail-in {
         width: 90%;
     }
+
     .bing>.sourceAttributions {
         flex-wrap: wrap;
     }
+
+    .bing>.sourceAttributions>a:hover {
+        flex: auto;
+    }
 }
+
 /*手机 css*/
 
 @media screen and (orientation:portrait) and (max-device-width:800px) and (max-device-height:1000px) {
@@ -476,6 +627,10 @@ div.markdown-body {
         max-width: 88vw;
         flex-wrap: wrap;
     }
+    
+    .bing>.sourceAttributions>a:hover {
+        flex: auto;
+    }
 
     .adaptiveCardsFatherDIV,
     .my>.bobo {
@@ -494,7 +649,7 @@ div.markdown-body {
         font-size: 1em;
     }
 
-    .GenerateContentQuery>img {
+    .GenerateContentQuery>a>img {
         max-width: 49%;
         width: 49%;
     }
@@ -505,5 +660,26 @@ div.markdown-body {
         margin: 0;
         padding: 0;
         opacity: 0;
+    }
+
+    /* 聊天部分,在页面内 */
+    @keyframes acceptMeaaage {
+        from {
+            margin-top: 1em;
+            margin-left: 0em;
+            opacity: 0;
+        }
+
+        to {}
+    }
+
+    @keyframes sendMeaaage {
+        from {
+            margin-top: 1em;
+            margin-right: 0em;
+            opacity: 0;
+        }
+
+        to {}
     }
 }

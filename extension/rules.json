@@ -18,7 +18,7 @@
             ]
         },
         "condition": {
-            "regexFilter": "wss?://sydney.bing.com/sydney/ChatHub",
+            "regexFilter": "$wss?://sydney.bing.com/sydney/ChatHub",
             "resourceTypes": [
                 "websocket"
             ]
@@ -26,6 +26,31 @@
     },
     {
         "id": 2,
+        "priority": 2,
+        "action": {
+            "type": "modifyHeaders",
+            "requestHeaders": [
+                {
+                    "header": "sec-fetch-site",
+                    "operation": "set",
+                    "value": "same-origin"
+                },
+                {
+                    "header": "referer",
+                    "operation": "set",
+                    "value": "https://www.bing.com/images/create?partner=sydney&showselective=1&sude=1&kseed=7000"
+                }
+            ]
+        },
+        "condition": {
+            "regexFilter": "^https?://.*.bing.com/images/create/async/results(.*)",
+            "resourceTypes": [
+                "xmlhttprequest"
+            ]
+        }
+    },
+    {
+        "id": 3,
         "priority": 1,
         "action": {
             "type": "modifyHeaders",
@@ -43,9 +68,9 @@
             ]
         },
         "condition": {
-            "regexFilter": "https?://www.bing.com/images/create(.*)",
+            "regexFilter": "^https?://.*.bing.com/images/create(.*)",
             "resourceTypes": [
-                "sub_frame"
+                "xmlhttprequest"
             ]
         }
     }

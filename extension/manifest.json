@@ -1,7 +1,7 @@
 {
 	"name": "CN NewBing",
 	"description": "免去复杂手段使用Bing AI",
-	"version": "1.0.0",
+	"version": "1.0.5",
 	"manifest_version": 3,
 	"permissions": [
 		"storage",
@@ -17,7 +17,7 @@
 		"wss://*/*"
 	],
 	"icons": {
-		"128": "img/nasapod128x128.png"
+		"128": "img/chat128x128.png"
 	},
 	"action": {
 		"default_popup": "popup/popup.html"

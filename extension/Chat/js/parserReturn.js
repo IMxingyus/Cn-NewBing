@@ -39,31 +39,50 @@ var throttling = {
     "maxNumUserMessagesInConversation": 0,
     "numUserMessagesInConversation": 0
 };
+
+//解析type2的item
+function porserType2Item(item){
+    let chatDiv = document.getElementById('chat');
+    if(item.result){
+        let result = item.result;
+        if(result.value=='Success'){
+            
+        }else if (result.value == 'Throttled') {
+            addError(result.message);
+            addError('消息请求数达到了限制');
+        }else{
+            addError(result.message);
+            addError('未知错误');
+        }
+    }
+    if (item.throttling) {
+        throttling = item.throttling;
+    }
+    if (item.messages) {
+        let nextFather = getByID(item.requestId, 'div', chatDiv, 'bing');
+        porserMessages(item.messages, nextFather);
+    }
+    
+}
 /**
  * 解析arguments
  * 解析聊天消息，将消息添加到页面
  * **/
 function porserArguments(argumentss) {
-    let chatDiv = document.getElementById('chat');
     for (let i = 0; i < argumentss.length; i++) {
-        if (argumentss[i].messages && argumentss[i].requestId) {
-            let nextFather = getByID(argumentss[i].requestId, 'div', chatDiv, 'bing');
-            porserMessages(argumentss[i].messages, nextFather);
-
-        } else if (argumentss[i].throttling && argumentss[i].requestId) {
-            throttling = argumentss[i].throttling;
-
-        } else {
-            console.log('发现一个另类argument', JSON.stringify(argumentss[i]));
-        }
+        porserType2Item(argumentss[i]);
     }
 }
+
 /* 
 解析messages
 */
 function porserMessages(messages, father) {
     for (let i = 0; i < messages.length; i++) {
         let message = messages[i];
+        if(message.author=='user'){
+            continue;//不解析用户的消息
+        }
 
         //解析adaptiveCards 也就是聊天消息部分 下面类型的都是带有adaptiveCards的
         if (!message.messageType && message.adaptiveCards) {//如果是正常的聊天
@@ -83,26 +102,30 @@ function porserMessages(messages, father) {
             }
 
         } else if (message.messageType == 'InternalSearchQuery') { //如果是收索消息
-            let div = document.createElement('div');
-            div.classList.add('InternalSearchQuery');
-            father.appendChild(div);
-            porserLineTextBlocks(message.spokenText, div);
+            let div = getByID(message.messageId, 'div', father, 'InternalSearchQuery');
+            porserLineTextBlocks(message.text, div);
 
         } else if (message.messageType == 'InternalLoaderMessage') { //如果是加载消息
-            let div = document.createElement('div');
-            div.classList.add('InternalLoaderMessage');
-            father.appendChild(div);
+            let div = getByID(message.messageId, 'div', father, 'InternalLoaderMessage');
             porserLineTextBlocks(message.text, div);
 
         } else if (message.messageType == 'GenerateContentQuery') {//如果是生成内容查询
-            let div = document.createElement('div');
-            div.classList.add('GenerateContentQuery');
-            father.appendChild(div);
+            let div = getByID(message.messageId, 'div', father, 'GenerateContentQuery');
             generateContentQuery(message, div);
 
         }else if (message.messageType == 'RenderCardRequest'){//渲染卡片请求，目前不知道有什么用
-            
             renderCardRequest(message, father);
+
+        }else if(message.messageType == 'Disengaged'){
+            let div = getByID(message.messageId, 'div', chat, 'error');
+            div.innerHTML = `
+            ${message.hiddenText}<br>聊天中断！试试开始新主题？
+            `;
+
+        }else if(message.contentOrigin == 'TurnLimiter'){
+            addError(message.text);
+            addError('聊天被限制了，试试开始新主题？');
+
         } else {
             console.log('发现一个另类message', JSON.stringify(message));
         }
@@ -114,6 +137,11 @@ function porserMessages(messages, father) {
 解析渲染卡片请求，暂时不知道如何解析这个请求,就先判断里面有没有内容吧！没有就不显示。
 */
 function renderCardRequest(message,father){
+    if(father[message.messageId+'renderCardRequest']){//防止解析多次
+        return;
+    }
+    father[message.messageId+'renderCardRequest'] = true;
+    
     let url = 'https://www.bing.com/search?'
     let theUrls = new URLSearchParams();
     theUrls.append("showselans",1);
@@ -125,13 +153,8 @@ function renderCardRequest(message,father){
         let html = await ret.text();
         // b_poleContent pc设备  || b_ans b_imgans 移动设备
         if(html.indexOf('class="b_poleContent"')>=0 || html.indexOf('class="b_ans')>=0){
-            let div = document.createElement('div');
-            div.classList.add('RenderCardRequest');
-            father.appendChild(div);
-            let iframe = document.createElement('iframe');
-            iframe.role="presentation";
-            iframe.src = src;
-            div.appendChild(iframe);
+            let div = getByID(message.messageId, 'div', father, 'RenderCardRequest');
+            div.innerHTML = `<iframe role="presentation" src="${src}"></iframe>`;
         }
     });
 }
@@ -142,6 +165,10 @@ function renderCardRequest(message,father){
 */
 function generateContentQuery(message, father) {
     if(message.contentType=="IMAGE"){
+        if(father.runed){//防止生成多次
+            return;
+        }
+        father.runed = true;
         generateContentQueryImg(message, father);
     }else{
         console.log('发现一个另类generateContentQuery', JSON.stringify(message));
@@ -154,11 +181,11 @@ function generateContentQuery(message, father) {
 function generateContentQueryImg(message, father){
     getMagicUrl().then(async magicUrl => {
         if (!magicUrl) {
-            addError("代理链接不正确！无法加载图片");
+            addError("代理链接不正确，无法加载图片");
             return;
         }
         if (!expUrl.test(magicUrl)) {
-            addError("代理链接不正确！无法加载图片")
+            addError("代理链接不正确，无法加载图片")
             return;
         }
         let theUrls = new URLSearchParams();
@@ -169,29 +196,38 @@ function generateContentQueryImg(message, father){
         theUrls.append('SFX', '2');
         theUrls.append('q', message.text);
         theUrls.append('iframeid', message.requestId);
-        let theUrl = URLTrue(magicUrl,"AiDraw/Create?") + theUrls.toString();
+        let theUrl = URLTrue(magicUrl,"images/create?") + theUrls.toString();
         
         try{
             father.innerHTML = `正在生成${message.text}的图片.`;
             let html = (await (await fetch(theUrl)).text());
-            let urr = new RegExp('"/(images/create/async/results/(\\S*))"').exec(html);
-            if(!urr || !urr[1]){
-                urr = new RegExp('class="gil_err_mt">([^<>]*)</div>').exec(html);
-                if(urr || urr[1]){
-                    father.innerHTML = `${urr[1]}`
-                    return;
+
+            //如果有错误就输出错误
+            let urr = new RegExp('class="gil_err_mt">([^<>]*)</div>').exec(html);
+            if(urr && urr[1]){
+                father.innerHTML = `<h3>${urr[1]}</h3>`
+                urr = new RegExp('class="gil_err_sbt">(([^<>]*<(a|div)[^<>]*>[^<>]*</(a|div)>[^<>]*)*)</div>').exec(html);
+                if(urr && urr[1]){
+                    father.innerHTML = father.innerHTML+`<p>${urr[1]}</p>`;
                 }
+                return;
+            }
+
+            //如果没错误就匹配链接获取图片
+            urr = new RegExp('"/(images/create/async/results/(\\S*))"').exec(html);
+            if(!urr || !urr[1]){
                 console.log(html);
                 addError("请求图片返回不正确的页面，无法加载图片。");
                 return;
             }
             let ur = urr[1];
+            ur = ur.replaceAll('&amp;','&');
             let imgPageHtmlUrl = URLTrue(magicUrl,ur);
             let count = 0;
             let run = async ()=>{
                 father.innerHTML = `正在生成${message.text}的图片.${count}`;
                 if(count>20){
-                    addError("请求图片超时！");
+                    father.innerHTML = "请求图片超时";
                     return;
                 }
                 count++;
@@ -205,16 +241,29 @@ function generateContentQueryImg(message, father){
                     setTimeout(run,3000);
                     return;
                 }
-                let div = document.createElement("div");
-                div.innerHTML = imgPageHtml;
-                let imgs = div.getElementsByTagName("img");
+
                 father.innerHTML = '';
-                for(let el=0;el<imgs.length;el++){
-                    let img = document.createElement('img');
-                    img.src = imgs[el].src;
-                    father.appendChild(img);
+                let theUrls = new URLSearchParams();
+                theUrls.append('createmessage',message.text);
+                let a = document.createElement("a");
+                father.appendChild(a);
+                //用正则找全部图片
+                let allSrc = imgPageHtml.matchAll(/<img[^<>]*src="([^"]*)"[^<>]*>/g);
+                let src = undefined;
+                let ok = false;
+                while(!(src=allSrc.next()).done){
+                    ok =true;
+                    theUrls.append('imgs',src.value[1].split('?')[0]);
+                    let img = document.createElement("img");
+                    img.src = src.value[1];
+                    a.appendChild(img);
                 }
-                div.remove();
+                if(ok){
+                    a.target = '_blank';
+                    a.href = 'chrome-extension://'+chrome.runtime.id+'/GeneratePicture/img.html?'+theUrls.toString();
+                }else{
+                    father.innerHTML = "服务器未正常返回图片";
+                }
             }
             setTimeout(run,3000);
             
@@ -340,9 +389,7 @@ function porserTextBlock(body, father) {
 添加单行简单文本
 */
 function porserLineTextBlocks(inline, father) {
-    let line = document.createElement('p');
-    line.innerHTML = inline;
-    father.appendChild(line);
+    father.innerHTML = `<p>${inline}</p>`;
 }
 
 /***
@@ -365,9 +412,7 @@ function porserSuggestedResponses(suggestedResponses) {
     for (let i = 0; i < suggestedResponses.length; i++) {
         let a = document.createElement('a');
         a.innerHTML = suggestedResponses[i].text;
-        a.onclick = (even) => {
-            send(even.target.innerHTML);
-        }
         searchSuggestions.appendChild(a);
     }
+    searchSuggestionsAddOnclick();
 }
